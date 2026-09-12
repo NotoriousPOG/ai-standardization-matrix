@@ -2,9 +2,9 @@
 
 ## By project stage
 
-### Spike / portfolio demo
-- Aim: L1–L2 on C01, C04, C06, C08; honest labeling (C12)
-- Skip claiming production authz (C03 L3) if the runtime is localhost-only
+### Spike / prototype
+- Aim: L1–L2 on C01, C04, C06, C08; honest labeling of fixture vs live paths (C12)
+- Do not claim production authz (C03 L3) for a localhost-only runtime
 - Keep side effects off (C09)
 
 ### Internal automation (read-only)
@@ -41,7 +41,7 @@
 3. **Retrieval as permission** — runbook text authorizing containment
 4. **Unbounded agents** — no turn/tool/time caps
 5. **Silent memory** — model writes durable facts without a human save
-6. **Demo laundering** — prepared playback marketed as evaluated live quality
+6. **Fixture laundering** — recorded playback treated as evaluated production quality
 7. **Average scores** — green dashboard while C03 or C06 remain L0
 
 ## Mapping to common stacks

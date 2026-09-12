@@ -1,8 +1,8 @@
 {
   "name": "ai-standardization-matrix",
   "version": "1.0.0",
-  "description": "Practical maturity matrix for building inspectable, scoped, reviewable AI automation.",
-  "source": "Derived from UNN.DEV AI automation engineering patterns (schema, tools, RAG, bounds, human review, evals).",
+  "description": "Practical maturity matrix for how you should build inspectable, scoped, reviewable AI automation.",
+  "source": "Engineering build standard for AI automation (schema, tools, RAG, bounds, human review, evals).",
   "maturityLevels": [
     {
       "id": "L0",
@@ -280,12 +280,12 @@
     {
       "id": "C12",
       "domain": "Evaluation & honesty",
-      "rule": "Test citations, tools, and negatives; label demo vs live; state limits",
+      "rule": "Test citations, tools, and negatives; label fixtures vs production; state limits",
       "levels": {
         "L0": "Manual eyeballing only",
         "L1": "A few golden transcripts",
         "L2": "Automated citation, tool-correctness, and negative controls",
-        "L3": "Calibrated judge metrics; stale-report detection; clear demo vs live labels"
+        "L3": "Calibrated judge metrics; stale-report detection; fixture vs production paths labeled"
       },
       "verify": {
         "L1": "Screenshot",
@@ -293,9 +293,9 @@
         "L3": "Negative controls fail closed"
       },
       "exampleSignals": [
-        "DeepEval citation and tool metrics",
+        "Citation and tool metrics",
         "Negative controls",
-        "Offline vs live labeling"
+        "Fixture vs production labeling"
       ]
     }
   ]

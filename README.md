@@ -1,32 +1,60 @@
 # AI Standardization Matrix
 
-A practical standard for building **AI automation** that stays inspectable, scoped, and reviewable.
+A build standard for **how you should design and ship AI automation** — agents, RAG loops, MCP tools, and orchestration that stay inspectable, scoped, and reviewable.
 
-Derived from UNN.DEV AI automation engineering patterns: schema validation at trust boundaries, allowlisted tools, scoped retrieval, cited outputs, bounded agent loops, and human review before action.
+This is not a hiring deck, compliance certificate, or product pitch. It is an engineering bar: twelve controls, four maturity levels, and verification signals to apply while you build.
 
-This is not a compliance certificate. It is a build standard: clear controls, maturity levels, and verification signals you can apply to any agent, RAG workflow, or automation loop.
+## Interactive example
 
-## Why this exists
+Walk a SIEM alert-response path and see which controls apply at each hop:
 
-Most AI automation fails the same ways:
+**https://notoriouspog.github.io/ai-standardization-matrix/**
 
-- The model invents evidence, IDs, or tool results
-- Tools inherit more authority than the caller
-- Retrieval text is treated as permission
-- Loops run without budgets
-- Drafts ship as decisions
-- “It worked in the demo” substitutes for evaluation
+## Example: SIEM alert → AI-assisted response
 
-The matrix turns those failure modes into **required controls**.
+The matrix is stack-agnostic. As an example, here is how the controls show up when AI automation helps a SOC respond to a SIEM alert — triage, related-event review, runbook guidance, and a cited analyst brief.
+
+**Rule of the example:** the AI gathers and drafts. It does not auto-contain the host. A person decides.
+
+```mermaid
+flowchart LR
+  A[SIEM critical alert] --> B[C01 Validate envelope]
+  B --> C[C02 Scope tenant/host/window]
+  C --> D[C03 Analyst session auth]
+  D --> E[C08 Bounded investigation loop]
+  E <--> F[C04 MCP/tools: related events]
+  E <--> G[C05 RAG: approved runbooks]
+  E --> H[C06 + C07 Cited analyst brief]
+  H --> I[C09 Human review / own actions]
+  I --> J[Optional C10 Analyst notes]
+  K[C11 Secrets] -.-> B
+  K -.-> E
+  L[C12 Evals] -.-> H
+  L -.-> F
+```
+
+| Stage | What happens in the SIEM example | Controls |
+| --- | --- | --- |
+| Admit the alert | SIEM/webhook payload hits the edge; strict schema rejects junk before any model call | C01, C11 |
+| Lock scope | Bind to tenant, host, and time window; drop cross-tenant or out-of-window events | C02 |
+| Bind the analyst | Tool calls inherit the authenticated SOC session — the model cannot invent authority | C03 |
+| Investigate in a budget | Model ↔ allowlisted tools (related alerts, process/DNS lookups) with turn/tool/time caps | C08, C04 |
+| Pull runbooks | Tenant-approved RAG returns versioned guidance; guidance is not permission to isolate | C05 |
+| Draft the brief | Structured findings cite real evidence IDs; hypotheses stay labeled with gaps | C06, C07 |
+| Analyst decides | Draft review; owners for next steps; no silent containment | C09, C10 |
+| Prove the path | Evals fail invented evidence IDs and broken tool contracts; fixture paths stay labeled | C12 |
+
+Same control order applies to CRM agents, cost bots, or MCP ops assistants — SIEM is just one concrete shape.
 
 ## Quick start
 
-1. Read [MATRIX.md](MATRIX.md) — twelve control domains × four maturity levels
-2. Score your system with [templates/scorecard.md](templates/scorecard.md)
-3. Use [CHECKLIST.md](CHECKLIST.md) during design and PR review
-4. Import [data/matrix.json](data/matrix.json) if you want machine-readable gates
+1. Skim the [SIEM flow example](https://notoriouspog.github.io/ai-standardization-matrix/)
+2. Read [MATRIX.md](MATRIX.md) — twelve domains × L0–L3
+3. Score your system with [templates/scorecard.md](templates/scorecard.md)
+4. Use [CHECKLIST.md](CHECKLIST.md) in design and PR review
+5. Import [data/matrix.json](data/matrix.json) for machine-readable gates
 
-**Target bar for production automation:** every control at **Standard (L2)** or higher. **Hardened (L3)** for anything that can change state, spend money, or touch production security systems.
+**Production bar:** every control at **Standard (L2)** or higher. **Hardened (L3)** when the system can change state, spend money, or touch production security systems.
 
 ## The twelve domains
 
@@ -43,7 +71,7 @@ The matrix turns those failure modes into **required controls**.
 | C09 | Human control | Default action is a reviewable draft; high-impact acts need a person |
 | C10 | Memory | Explicit save only; label untrusted; isolate by tenant; cap retention |
 | C11 | Secrets & data hygiene | No credentials in repos, exports, or browser storage of provider keys |
-| C12 | Evaluation & honesty | Test citations, tools, and negatives; label demo vs live; state limits |
+| C12 | Evaluation & honesty | Test citations, tools, and negatives; label fixtures vs production; state limits |
 
 ## Maturity levels
 
@@ -54,36 +82,20 @@ The matrix turns those failure modes into **required controls**.
 | L2 | Standard | Enforced in code, with tests or evals |
 | L3 | Hardened | Production-grade: authz, budgets, audit, negative controls, repair limits |
 
-## Pattern origins (examples behind each control)
-
-| Pattern | Matrix control |
-| --- | --- |
-| Strict alert/incident/report schemas | C01, C06 |
-| Tenant + time window + dedup key | C02 |
-| Short-lived caller token for tools | C03 |
-| MCP / plugin dispatcher with I/O contracts | C04 |
-| Approved, tenant-filtered runbook search | C05 |
-| Evidence/knowledge ID validation on finish | C06 |
-| Hypotheses marked unverified + alternatives | C07 |
-| Max rounds, tool calls, repairs, timeout | C08 |
-| Analyst inbox / draft before approval | C09 |
-| Explicit analyst notes, not auto-memory | C10 |
-| Runtime-only provider keys; secret scanning | C11 |
-| Citation + tool + negative-control evals | C12 |
-
 See [ADOPTION.md](ADOPTION.md) for rollout by project stage.
 
-## Suggested use
+## How to use this when building
 
-- **Design:** pick L2 as the default acceptance bar before writing agent code
+- **Design:** set L2 as the acceptance bar before writing the agent loop
+- **Implementation:** ship validators and budgets in the same PR as the first tool call
 - **PR review:** attach the checklist; block merge on C01–C08 + C11 at L2 for any live loop
-- **Portfolio / hiring demos:** keep L2 for simulated paths; do not claim L3 without production authz
-- **Audits:** export the scorecard and link failing controls to tickets
+- **Release:** export the scorecard; open tickets for every control still below L2
+- **Fixtures:** if you use recorded playback for tests, label it — never treat it as a production eval
 
 ## Related work
 
 - [nist-ai-rmf-skill](https://github.com/NotoriousPOG/nist-ai-rmf-skill) — NIST AI RMF assessment skill for Cursor
-- Optional alignment notes: Map ≈ C01–C07, Measure ≈ C12, Manage ≈ C08–C11, Govern ≈ org policy wrapping this matrix
+- Optional RMF alignment: Map ≈ C01–C07, Measure ≈ C12, Manage ≈ C08–C11, Govern ≈ org policy wrapping this matrix
 
 ## License
 

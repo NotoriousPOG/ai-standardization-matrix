@@ -22,9 +22,9 @@ Project: ________________ Date: ________ Reviewer: ________
 - [ ] **C10** Memory is explicit, tenant-scoped, capped, and labeled untrusted
 - [ ] **C12** Automated checks cover citations, tool traces, and at least one negative control
 
-## Honesty / product labeling
+## Honesty / release labeling
 
-- [ ] Demo or prepared playback is labeled as such (not “live AI”)
+- [ ] Test fixtures or recorded playback are labeled (not presented as production behavior)
 - [ ] Limitations of conclusions are visible to the reviewer
 - [ ] Write-back / containment / spend paths are off unless explicitly enabled
 

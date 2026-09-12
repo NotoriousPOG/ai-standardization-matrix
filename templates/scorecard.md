@@ -27,7 +27,7 @@ Production target: **L2+** on C01–C08 and C11 (see MATRIX.md scoring rules).
 
 - [ ] Meets production Standard gate
 - [ ] Internal read-only only
-- [ ] Demo / portfolio only (side effects off, labeled)
+- [ ] Prototype only (side effects off; fixtures labeled)
 - [ ] Blocked — list failing controls: ________
 
 ## Notes
