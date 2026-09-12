@@ -4,11 +4,13 @@ A build standard for **how you should design and ship AI automation** — agents
 
 This is not a hiring deck, compliance certificate, or product pitch. It is an engineering bar: twelve controls, four maturity levels, and verification signals to apply while you build.
 
-## Interactive example
+## Live example
 
-Walk a SIEM alert-response path and see which controls apply at each hop:
+Interactive SIEM alert walkthrough (queue → tools → cited analyst report):
 
 **https://notoriouspog.github.io/ai-standardization-matrix/**
+
+This Pages demo is only the automation example. The build standard lives in the Markdown / JSON files in this repo.
 
 ## Example: SIEM alert → AI-assisted response
 
