@@ -4,173 +4,92 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <title>AI Automation Example · SIEM Alert Response</title>
-  <meta name="description" content="Example of AI automation for SIEM alert response: queue intake through cited analyst report.">
+  <title>Stephen Starr · AI Automation Example</title>
+  <link rel="stylesheet" href="./lab.css">
   <style>
-:root{color-scheme:dark;--bg:#10121c;--panel:#181b29;--panel2:#222538;--line:#41465f;--muted:#bbbfd2;--text:#f3f2f8;--accent:#a68acb;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);line-height:1.6}
-button,select{font:inherit;cursor:pointer;color:var(--text);border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:9px 15px;font-weight:600;transition:background .15s,border-color .15s}
-button:hover{background:#2d314a;border-color:#a1a9cb}
-button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
-button:disabled{opacity:.55;cursor:not-allowed}
-a{color:var(--accent);text-underline-offset:4px}
-.app{display:grid;grid-template-columns:260px minmax(0,1fr);min-height:100vh}
-.sidebar{border-right:1px solid var(--line);padding:30px 20px;display:flex;flex-direction:column;gap:24px;background:linear-gradient(165deg,#191e30,#171321 75%)}
-.brand{display:flex;flex-direction:column;align-items:flex-start;gap:14px;color:var(--text);text-decoration:none;font-size:13px;font-weight:700;letter-spacing:1px}
-.brand-logo{display:block;width:200px;max-width:100%;height:auto}
-.brand small{display:block;font-size:14px;letter-spacing:0;font-weight:400;color:var(--muted)}
-.nav-label,.eyebrow{font-size:12px;letter-spacing:1.4px;font-weight:700;color:var(--accent);margin:0}
-.nav-label{color:var(--muted);font-size:11px}
-nav{display:flex;flex-direction:column;gap:8px}
-nav button{display:flex;align-items:flex-start;gap:12px;text-align:left;padding:13px 10px;background:transparent;border-color:transparent;font-size:15px;line-height:1.4;font-weight:500;color:var(--text);width:100%}
-nav button>span:first-child{color:var(--muted);font-size:12px;min-width:1.5rem}
-nav button em{display:block;font-style:normal;font-size:12px;color:var(--muted);font-weight:400;margin-top:4px}
-nav button[aria-current=step]{background:#30283f;border:1px solid #695880;color:#fff;border-radius:9px}
-nav button[aria-current=step]>span:first-child{color:var(--accent)}
-.sidebar-foot{margin-top:auto;font-size:12px;color:var(--muted)}
-.sidebar-foot p{margin:8px 0}
-main{padding:36px 42px 28px;min-width:0}
-header{display:flex;gap:24px;justify-content:space-between;align-items:flex-start;margin-bottom:24px}
-h1{font-size:clamp(28px,2.7vw,40px);line-height:1.2;letter-spacing:-1px;font-weight:650;margin:12px 0}
-h2{font-size:22px;line-height:1.3;margin:0 0 16px}
-h3{font-size:20px;margin:0 0 12px}
-p{margin:12px 0}
-#subtitle{color:var(--muted);max-width:780px;margin:0}
-.badge{border:1px solid #695880;background:#30283f;border-radius:20px;padding:5px 12px;color:#ddc9f5;font-size:12px;white-space:nowrap}
-.primary{background:var(--accent);border-color:var(--accent);color:#17121f}
-.primary:hover{background:#c6afe6;border-color:#c6afe6}
-.subtle{background:transparent;font-size:14px}
-.flow-controls{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:8px 0 22px}
-.flow-controls label{margin-left:auto;color:var(--muted);font-size:14px}
-select{background:#161a29;color:var(--text);border:1px solid #61698a;border-radius:7px;padding:9px 32px 9px 12px;font-size:15px}
-.security-track{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;margin:26px 0}
-.security-stage{position:relative;text-align:left;background:var(--panel);padding:20px 16px;min-width:0;white-space:normal;font-weight:400;line-height:1.45;width:100%}
-.security-stage strong{display:block;font-size:17px;margin:8px 0}
-.security-stage>span:last-child{color:var(--muted);font-size:14px}
-.security-stage-number{font-family:ui-monospace,monospace;color:#bda4df;font-size:14px}
-.security-stage:not(:nth-child(4n)):not(:last-child)::after{content:"→";position:absolute;right:-21px;top:45%;color:#89a3d0;font-size:20px;pointer-events:none}
-.security-stage.active{border-color:var(--accent);background:#30283f;box-shadow:0 0 0 1px var(--accent)}
-.security-stage.complete{border-color:#768fb9}
-.security-playing .security-stage.active::after{animation:packet-pulse 1s ease-in-out infinite}
-.security-status{color:#d3bcf0;min-height:26px;margin:0 0 18px}
-.security-workspace{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:24px}
-.security-pane{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:24px;min-width:0}
-.security-empty{color:var(--muted)}
-.security-alert{width:100%;text-align:left;padding:18px;background:var(--bg);border-left:3px solid #f0838f;font-weight:400;white-space:normal}
-.security-alert strong,.security-alert>span:not(.security-severity),.security-alert small{display:block;margin-top:10px;line-height:1.55}
-.security-alert small{color:var(--muted);font-size:14px}
-.security-severity{color:#ffb6bf;font-size:14px;font-weight:600}
-.security-inbox{border-top:1px solid var(--line);margin-top:28px;padding-top:24px}
-.security-notification{padding:18px;text-align:left;width:100%;white-space:normal;background:#30283f;border-color:var(--accent);font-weight:400}
-.security-notification>*{display:block;line-height:1.5;margin-bottom:6px}
-.security-notification>span:last-child{color:#d6c0ef;margin-bottom:0}
-.security-result{display:block;width:100%;text-align:left;padding:14px 0;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;font-weight:400;white-space:normal}
-.security-result strong{display:block;font-size:16px;color:#c3b0df}
-.security-result span,.security-result p{display:block;font-size:16px;margin:8px 0 0;line-height:1.55}
-button.security-result:hover{background:var(--panel2)}
-.security-json{font-size:15px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;max-height:280px;overflow:auto;background:var(--bg);padding:18px;border-radius:8px;border:1px solid var(--line);margin:14px 0 0;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
-.security-brief{margin-top:28px;padding:28px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
-.security-brief[hidden]{display:none}
-.evidence-card{border-left:3px solid #89a3d0;padding:16px 18px;margin:14px 0;background:var(--panel);border-radius:0 8px 8px 0}
-.evidence-card strong{display:block;font-size:16px}
-.evidence-card p{margin:8px 0 0;color:var(--muted);font-size:15px}
-.action-card{border:1px solid var(--line);border-radius:8px;padding:16px;margin:12px 0;background:var(--panel)}
-.action-card strong{display:block}
-.action-card p{margin:8px 0 0;font-size:15px;color:var(--muted)}
-.action-priority{display:inline-block;border-radius:4px;background:#30283f;color:#ddc9f5;font-size:12px;padding:3px 8px;margin-bottom:10px;border:1px solid #695880}
-.refs{font-family:ui-monospace,monospace;font-size:12px;color:#c6afe6}
-.brief-meta{display:flex;flex-wrap:wrap;gap:12px 20px;color:var(--muted);font-size:14px;margin:8px 0 20px}
-footer{display:flex;justify-content:space-between;gap:16px;margin-top:40px;padding-top:20px;border-top:1px solid #2e344c;color:var(--muted);font-size:12px}
-.skip{position:absolute;top:-70px;left:20px;z-index:10;background:var(--panel);padding:12px}
-.skip:focus{top:10px}
-@keyframes packet-pulse{50%{opacity:.45}}
-@media(max-width:1100px){.app{grid-template-columns:220px minmax(0,1fr)}main{padding:28px 24px}.security-workspace{grid-template-columns:1fr}}
-@media(max-width:1000px){.security-track{gap:18px;grid-template-columns:repeat(2,minmax(0,1fr))}.security-stage:nth-child(2n)::after{display:none}.security-stage:not(:nth-child(2n))::after{right:-17px;font-size:16px}}
-@media(max-width:720px){
-  .app{display:block}
-  .sidebar{padding:20px;gap:18px;border-right:0;border-bottom:1px solid var(--line)}
-  .brand{flex-direction:row;align-items:center;gap:20px}
-  .brand-logo{width:160px;max-width:45%}
-  nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
-  .nav-label,.sidebar-foot{display:none}
-  main{padding:26px 16px}
-  header{flex-wrap:wrap}
-  .flow-controls label{margin-left:0}
-  .security-track{gap:16px}
-  .security-stage{padding:14px 10px}
-  .security-pane,.security-brief{padding:18px}
-  footer{display:block}
-}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+    /* Pages-only shell tweaks on top of architecture-lab CSS */
+    #security-brief-shell{padding:0;margin-top:28px;border:0;background:transparent}
+    #security-brief-shell[hidden]{display:none}
+    .security-brief-host{margin-top:28px}
   </style>
 </head>
 <body>
-<a class="skip" href="#main">Skip to example</a>
+<a class="skip" href="#main">Skip to walkthrough</a>
 <div class="app">
   <aside class="sidebar">
     <a class="brand" href="./">
       <img class="brand-logo" src="./unndev-wide.png" alt="UNN.DEV">
-      <span>AI AUTOMATION<small>SIEM example</small></span>
+      <span>STEPHEN STARR<small>AI automation example</small></span>
     </a>
     <p class="nav-label">INVESTIGATION STAGES</p>
-    <nav id="nav" aria-label="Investigation stages"></nav>
-    <div class="sidebar-foot">
-      <p>Example only. Authored fixtures. No live SIEM or model calls.</p>
-      <p><a href="https://github.com/NotoriousPOG/ai-standardization-matrix">Standard matrix on GitHub</a></p>
+    <nav id="navigation" aria-label="Investigation stages"></nav>
+    <div class="sidebar-footer">
+      <p><span class="dot"></span>Authored fixtures · no live SIEM</p>
+      <p><a href="https://github.com/NotoriousPOG/ai-standardization-matrix">Build standard on GitHub</a></p>
     </div>
   </aside>
 
   <main id="main" tabindex="-1">
     <header>
       <div>
-        <p class="eyebrow">AI AUTOMATION EXAMPLE</p>
-        <h1>SIEM alert to analyst report</h1>
-        <p id="subtitle">How AI automation can respond to a critical detection: admit the alert, validate and queue it, pull related SIEM evidence through MCP, retrieve runbooks, inspect artifacts, cross-check intelligence, draft a cited assessment, then hand a human the report.</p>
+        <p class="eyebrow" id="eyebrow">03 · AI INVESTIGATION</p>
+        <h1 id="page-title">SIEM alert automation</h1>
+        <p id="subtitle">Example of how AI automation can respond to a critical detection: validate the alert, gather MCP/RAG/intelligence evidence, then deliver one cited analyst brief for human review.</p>
       </div>
-      <span class="badge">Authored fixtures</span>
     </header>
 
-    <section class="security-simulation" id="sim" aria-label="SIEM AI automation example">
-      <div class="flow-controls">
-        <button class="primary" id="play" type="button">Simulate critical alert</button>
-        <button class="subtle" id="next" type="button">Next step</button>
-        <button class="subtle" id="reset" type="button">Restart</button>
-        <label for="pace">Pace</label>
-        <select id="pace">
-          <option value="2600">Explain · 2.6s</option>
-          <option value="1100">Quick · 1.1s</option>
-          <option value="5000">Slow · 5s</option>
-        </select>
-      </div>
-
-      <div class="security-track" id="track" aria-label="Automation stages"></div>
-      <p class="security-status" id="status" role="status" hidden></p>
-
-      <div class="security-workspace">
-        <section class="security-pane">
-          <h2>Detection queue</h2>
-          <div id="queue"></div>
-          <div class="security-inbox">
-            <h3>Analyst inbox</h3>
-            <div id="notification"></div>
-          </div>
-        </section>
-        <section class="security-pane">
-          <h2>Investigation</h2>
-          <div id="output"></div>
-        </section>
-      </div>
-
-      <section class="security-brief" id="brief" hidden aria-label="Analyst report"></section>
-    </section>
+    <div id="content">
+      <section class="security-simulation" id="security-simulation">
+        <div class="flow-controls">
+          <button class="primary" id="security-play" type="button">Simulate critical alert</button>
+          <button class="subtle" id="security-step" type="button">Next step</button>
+          <button class="subtle" id="security-reset" type="button">Restart</button>
+          <label for="security-pace">Pace</label>
+          <select id="security-pace">
+            <option value="2600">Explain · 2.6s</option>
+            <option value="1100">Quick · 1.1s</option>
+            <option value="5000">Slow · 5s</option>
+          </select>
+        </div>
+        <div class="security-track" id="security-track" aria-label="Automation stages"></div>
+        <p class="security-status" id="security-status" role="status" hidden></p>
+        <div class="security-workspace">
+          <section class="security-pane">
+            <h2>Detection queue</h2>
+            <div id="security-queue"></div>
+            <div class="security-inbox">
+              <h3>Analyst inbox</h3>
+              <div id="security-notification"></div>
+            </div>
+          </section>
+          <section class="security-pane">
+            <h2>Investigation</h2>
+            <div id="security-output"></div>
+          </section>
+        </div>
+        <section class="security-brief" id="security-brief-shell" hidden></section>
+      </section>
+    </div>
 
     <footer>
-      <span>Example of AI automation for SIEM response</span>
-      <span><a href="https://github.com/NotoriousPOG/ai-standardization-matrix">Build standard on GitHub</a></span>
+      <span>Stephen Starr · AI engineering</span>
+      <span><a href="https://github.com/NotoriousPOG/ai-standardization-matrix">GitHub</a></span>
     </footer>
   </main>
 </div>
+
+<dialog id="detail">
+  <div class="dialog-head">
+    <div>
+      <p class="eyebrow" id="detail-label" hidden></p>
+      <h2 id="detail-title"></h2>
+    </div>
+    <button class="icon-button" id="close-dialog" type="button" aria-label="Close details">✕</button>
+  </div>
+  <p id="detail-why"></p>
+  <pre id="detail-code" tabindex="0"><code></code></pre>
+  <p class="dialog-foot" id="detail-foot">Authored fixture · inspect only</p>
+</dialog>
 
 <script>
 const el = (tag, text, cls) => {
@@ -179,62 +98,254 @@ const el = (tag, text, cls) => {
   if (cls) n.className = cls;
   return n;
 };
+const button = (text, action, cls = "subtle") => {
+  const b = el("button", text, cls);
+  b.type = "button";
+  b.onclick = action;
+  return b;
+};
 
 let fixture = null;
 let current = -1;
 let playing = false;
 let reviewed = false;
+let reportOpen = false;
 let timer = null;
 
-const root = document.getElementById("sim");
-const nav = document.getElementById("nav");
-const track = document.getElementById("track");
-const status = document.getElementById("status");
-const queue = document.getElementById("queue");
-const notification = document.getElementById("notification");
-const output = document.getElementById("output");
-const brief = document.getElementById("brief");
-const playBtn = document.getElementById("play");
-const nextBtn = document.getElementById("next");
-const resetBtn = document.getElementById("reset");
-const pace = document.getElementById("pace");
+const root = document.getElementById("security-simulation");
+const nav = document.getElementById("navigation");
+const track = document.getElementById("security-track");
+const status = document.getElementById("security-status");
+const queue = document.getElementById("security-queue");
+const notification = document.getElementById("security-notification");
+const output = document.getElementById("security-output");
+const brief = document.getElementById("security-brief-shell");
+const playBtn = document.getElementById("security-play");
+const nextBtn = document.getElementById("security-step");
+const resetBtn = document.getElementById("security-reset");
+const pace = document.getElementById("security-pace");
+const detail = document.getElementById("detail");
 
-function recordRow(record) {
-  const b = el("button", undefined, "security-result");
-  b.type = "button";
-  b.append(el("strong", `${record.id} · ${record.source || record.title}`), el("span", record.summary || record.text));
+document.getElementById("close-dialog").onclick = () => detail.close();
+
+function openDetail({ title, why, json }) {
+  document.getElementById("detail-title").textContent = title;
+  document.getElementById("detail-why").textContent = why;
+  detail.querySelector("code").textContent = JSON.stringify(json, null, 2);
+  detail.showModal();
+}
+
+function recordRow(r) {
+  const b = button("", () => openDetail({
+    title: `${r.id} · ${r.source || r.title}`,
+    why: r.summary || r.text,
+    json: r
+  }), "security-result");
+  b.append(el("strong", `${r.id} · ${r.source || r.title}`), el("span", r.summary || r.text));
   return b;
+}
+
+/* Same report shape as architecture-lab incident-report.js (Overview / timeline / devices / guidance / next steps). */
+function renderIncidentReport(incident, analysis, knowledge, options = {}) {
+  const card = el("article", undefined, "client-card incident-report");
+  card.id = "security-brief";
+
+  const brand = document.querySelector(".brand-logo");
+  if (brand) {
+    const logo = el("img", undefined, "brief-logo");
+    logo.src = brand.src;
+    logo.alt = "UNN.DEV";
+    card.append(logo);
+  }
+
+  card.append(el("h2", incident.title));
+
+  const route = el("div", undefined, "incident-routing");
+  route.append(
+    el("strong", incident.incidentId),
+    el("span", `Prepared for ${incident.analyst.name} · ${incident.analyst.queue}`),
+    el("span", options.reviewed ? "Reviewed" : "Needs analyst review", "review-state")
+  );
+  if (options.onReview) {
+    const review = button(options.reviewed ? "Reviewed" : "Mark reviewed", options.onReview, "primary");
+    review.id = "security-review";
+    review.disabled = !!options.reviewed;
+    route.append(review);
+  }
+  card.append(route);
+
+  const stats = el("div", undefined, "incident-stats");
+  const windowMin = (Date.parse(incident.scope.end) - Date.parse(incident.scope.start)) / 60000;
+  for (const [label, value] of [
+    ["Unique records", incident.metrics.uniqueRecords],
+    ["Occurrences", incident.metrics.occurrences],
+    ["Sources", incident.metrics.sources],
+    ["Devices in scope", incident.metrics.devices],
+    ["Applications", incident.metrics.applications],
+    ["Window", `${windowMin} min`]
+  ]) {
+    const d = el("div");
+    d.append(el("strong", String(value)), el("small", label));
+    stats.append(d);
+  }
+  card.append(stats);
+  card.append(el("p", `${incident.scope.start} → ${incident.scope.end} · ${incident.ingestion.duplicateRows} duplicate removed · ${incident.ingestion.excludedRows} outside scope`, "incident-window"));
+
+  const toolbar = el("div", undefined, "incident-toolbar");
+  const tabs = el("div", undefined, "tab-group");
+  const content = el("div", undefined, "incident-content");
+  content.id = "security-brief-content";
+  let selected = "Overview";
+
+  const evidence = (id) => {
+    const e = incident.events.find((ev) => ev.evidenceId === id);
+    if (!e) return;
+    openDetail({
+      title: `${id} · ${e.sourceEventId}`,
+      why: `Supporting fictional source record. ${e.correlationReason}. This observation does not by itself prove compromise.`,
+      json: e
+    });
+  };
+  const refs = (ids) => {
+    const row = el("div", undefined, "evidence-links");
+    for (const id of ids) row.append(button(id, () => evidence(id), "evidence-link"));
+    return row;
+  };
+  const section = (title) => content.append(el("h3", title));
+
+  function draw() {
+    for (const b of tabs.children) b.setAttribute("aria-pressed", String(b.textContent === selected));
+    content.replaceChildren();
+
+    if (selected === "Overview") {
+      section("Analyst assessment");
+      content.append(el("p", analysis.summary));
+      content.append(el("p", `Assessment: ${analysis.assessment} · Confidence: ${analysis.confidence} (qualitative)`, "analysis-judgement"));
+      section("Findings and supporting evidence");
+      for (const finding of analysis.findings) {
+        const c = el("div", undefined, "evidence-card");
+        c.append(el("strong", finding.title), el("p", finding.interpretation), refs(finding.evidenceIds));
+        content.append(c);
+      }
+      if (options.intelligence?.length) {
+        section("Threat intelligence");
+        for (const source of options.intelligence) {
+          content.append(button(`${source.name} · ${source.summary}`, () => openDetail({
+            title: source.name,
+            why: source.summary,
+            json: source
+          }), "security-result"));
+        }
+      }
+      section("Working hypotheses");
+      const ul = el("ul");
+      for (const h of analysis.hypotheses) ul.append(el("li", h));
+      content.append(ul);
+    } else if (selected === "Retrieved guidance") {
+      section("Runbooks supporting the recommended checks");
+      content.append(el("p", "Fictional guidance retrieved locally. These passages are reference material, separate from incident observations.", "incident-note"));
+      for (const chunk of knowledge.chunks) {
+        const c = el("div", undefined, "evidence-card");
+        c.append(
+          el("strong", `${chunk.id} · ${chunk.title} · v${chunk.version}`),
+          el("p", chunk.text),
+          button(`Inspect ${chunk.id}`, () => openDetail({ title: chunk.title, why: "Retrieved guidance, not incident evidence.", json: chunk }), "subtle")
+        );
+        content.append(c);
+      }
+    } else if (selected === "Evidence timeline") {
+      content.append(el("p", "Select an evidence ID to inspect the source record and the reason it joined this aggregate.", "incident-note"));
+      for (const e of [...incident.events].sort((a, b) => a.occurredAt.localeCompare(b.occurredAt))) {
+        const device = incident.devices.find((d) => d.id === e.deviceId);
+        const row = el("div", undefined, "timeline-event");
+        row.append(el("span", e.occurredAt.slice(11, 19) + " UTC", "timeline-time"));
+        const body = el("div");
+        body.append(
+          el("strong", `${e.source} · ${device?.name || e.deviceId}`),
+          el("p", e.text),
+          el("small", `${e.occurrences} occurrence${e.occurrences === 1 ? "" : "s"} · ${e.correlationReason}`),
+          refs([e.evidenceId])
+        );
+        row.append(body);
+        content.append(row);
+      }
+    } else if (selected === "Devices & applications") {
+      content.append(el("p", "These entities appear in the selected records. Involvement does not mean every device or application is compromised.", "incident-note"));
+      section("End devices and servers");
+      for (const d of incident.devices) {
+        const ev = incident.events.filter((e) => e.deviceId === d.id || e.targetDeviceId === d.id || e.relatedDeviceIds?.includes(d.id));
+        const c = el("div", undefined, "asset-card");
+        c.append(
+          el("strong", d.name),
+          el("p", `${d.type} · ${d.owner} · ${d.criticality} business criticality`),
+          el("p", d.businessRole),
+          el("small", ev.map((e) => `${e.evidenceId}: ${e.kind.replaceAll("_", " ")}`).join(" · ")),
+          refs(ev.map((e) => e.evidenceId))
+        );
+        content.append(c);
+      }
+      section("Applications and services");
+      for (const app of incident.applications) {
+        const ev = incident.events.filter((e) => e.applicationIds.includes(app.id));
+        const c = el("div", undefined, "asset-card");
+        c.append(el("strong", app.name), el("p", app.role), refs(ev.map((e) => e.evidenceId)));
+        content.append(c);
+      }
+    } else {
+      section("Prioritized next steps");
+      for (const step of analysis.nextSteps) {
+        const c = el("div", undefined, "action-card");
+        c.append(
+          el("span", step.priority, "action-priority"),
+          el("strong", step.action),
+          el("p", `Owner: ${step.owner}`),
+          el("p", step.reason),
+          refs(step.evidenceIds)
+        );
+        for (const id of step.knowledgeIds || []) {
+          const chunk = knowledge.chunks.find((k) => k.id === id);
+          if (chunk) {
+            c.append(button(`Guidance ${id}`, () => openDetail({
+              title: chunk.title,
+              why: "This retrieved passage supports the recommended investigation method; it does not prove the incident hypothesis.",
+              json: chunk
+            }), "evidence-link"));
+          }
+        }
+        content.append(c);
+      }
+      section("Unknowns and decision limits");
+      const ul = el("ul");
+      for (const item of analysis.limitations) ul.append(el("li", item));
+      content.append(ul);
+    }
+  }
+
+  for (const label of ["Overview", "Evidence timeline", "Devices & applications", "Retrieved guidance", "Next steps"]) {
+    tabs.append(button(label, () => { selected = label; draw(); }));
+  }
+  toolbar.append(tabs);
+  card.append(toolbar, content);
+  card.append(el("p", "Prepared analyst brief from authored fixtures. No response action was executed.", "client-foot"));
+  draw();
+  return card;
 }
 
 function buildChrome() {
   nav.replaceChildren();
   track.replaceChildren();
   fixture.stages.forEach((stage, i) => {
-    const side = el("button");
-    side.type = "button";
+    const side = button("", () => { pause(); current = i; if (i === 7) reportOpen = true; draw(); });
     side.append(el("span", String(i + 1).padStart(2, "0")), document.createTextNode(` ${stage.title}`));
-    const caption = el("em", fixture.captions[i]);
-    side.append(caption);
-    side.addEventListener("click", () => {
-      pause();
-      current = i;
-      draw();
-    });
     nav.append(side);
 
-    const card = el("button", undefined, "security-stage");
-    card.type = "button";
+    const card = button("", () => { pause(); current = i; if (i === 7) reportOpen = true; draw(); }, "security-stage");
     card.append(
       el("span", String(i + 1).padStart(2, "0"), "security-stage-number"),
       el("strong", stage.title),
       el("span", fixture.captions[i])
     );
-    card.setAttribute("aria-label", `Go to ${stage.title}`);
-    card.addEventListener("click", () => {
-      pause();
-      current = i;
-      draw();
-    });
+    card.setAttribute("aria-label", `Explore ${stage.title}`);
     track.append(card);
   });
 }
@@ -248,16 +359,15 @@ function pause() {
 
 function updateControls() {
   if (!fixture) return;
-  const last = fixture.stages.length - 1;
   playBtn.textContent = playing
     ? "Pause"
     : current < 0
       ? "Simulate critical alert"
-      : current === last
+      : current === 7
         ? "Replay investigation"
         : "Continue investigation";
   playBtn.setAttribute("aria-pressed", String(playing));
-  nextBtn.disabled = current === last;
+  nextBtn.disabled = current === 7;
   resetBtn.disabled = current < 0;
 }
 
@@ -266,15 +376,16 @@ function schedule() {
   timer = setTimeout(() => {
     if (!playing) return;
     advance();
-    if (current < fixture.stages.length - 1) schedule();
+    if (current < 7) schedule();
     else pause();
   }, Number(pace.value));
 }
 
 function start() {
-  if (current === fixture.stages.length - 1) {
+  if (current === 7) {
     current = -1;
     reviewed = false;
+    reportOpen = false;
   }
   playing = true;
   root.classList.add("security-playing");
@@ -284,70 +395,31 @@ function start() {
 }
 
 function advance() {
-  if (current < fixture.stages.length - 1) current += 1;
+  if (current < 7) current += 1;
+  if (current === 7) reportOpen = true;
   draw();
 }
 
-function renderReport() {
-  const a = fixture.assessment;
-  brief.hidden = false;
-  brief.replaceChildren();
-
-  brief.append(el("p", "ANALYST REPORT", "eyebrow"));
-  brief.append(el("h2", a.title));
-
-  const meta = el("div", undefined, "brief-meta");
-  meta.append(el("span", `Incident ${fixture.incidentId}`));
-  meta.append(el("span", a.priority));
-  meta.append(el("span", a.confidence));
-  meta.append(el("span", reviewed ? "Reviewed" : "Awaiting review"));
-  brief.append(meta);
-
-  brief.append(el("p", a.summary));
-
-  brief.append(el("h3", "Findings"));
-  a.findings.forEach((f) => {
-    const card = el("div", undefined, "evidence-card");
-    card.append(el("strong", f.title), el("p", f.text), el("p", `Refs: ${f.refs.join(", ")}`, "refs"));
-    brief.append(card);
-  });
-
-  brief.append(el("h3", "Prioritized next steps"));
-  a.actions.forEach((action, i) => {
-    const card = el("div", undefined, "action-card");
-    card.append(
-      el("span", i < 2 ? "Now" : "Next", "action-priority"),
-      el("strong", action.action),
-      el("p", `Owner: ${action.owner}`),
-      el("p", `Refs: ${action.refs.join(", ")}`, "refs")
-    );
-    brief.append(card);
-  });
-
-  brief.append(el("h3", "Not executed by automation"));
-  brief.append(el("p", a.notExecuted.join(" · ")));
-
-  brief.append(el("h3", "Limitations"));
-  a.limitations.forEach((line) => brief.append(el("p", line)));
-
-  const review = el("button", reviewed ? "Review recorded" : "Mark reviewed", reviewed ? "subtle" : "primary");
-  review.type = "button";
-  review.disabled = reviewed;
-  review.style.marginTop = "18px";
-  review.addEventListener("click", () => {
-    reviewed = true;
-    draw();
-  });
-  brief.append(review);
+function renderBrief() {
+  brief.hidden = !reportOpen || current < 7;
+  if (brief.hidden) {
+    brief.replaceChildren();
+    return;
+  }
+  const knowledge = { chunks: fixture.knowledge };
+  brief.replaceChildren(renderIncidentReport(fixture.incident, fixture.analysis, knowledge, {
+    reviewed,
+    onReview: () => { reviewed = true; draw(); },
+    intelligence: fixture.intel
+  }));
 }
 
 function draw() {
   if (!fixture) return;
   updateControls();
-  const last = fixture.stages.length - 1;
 
   [...nav.children].forEach((b, i) => {
-    if (i === current) b.setAttribute("aria-current", "step");
+    if (i === current) b.setAttribute("aria-current", "page");
     else b.removeAttribute("aria-current");
   });
   [...track.children].forEach((b, i) => {
@@ -364,34 +436,41 @@ function draw() {
   if (current < 0) {
     queue.append(el("p", "No critical alerts awaiting investigation.", "security-empty"));
   } else {
-    const alert = el("div", undefined, "security-alert");
+    const alert = button("", () => openDetail({
+      title: "E1 · evt-ransom-1",
+      why: fixture.evidence[0].summary,
+      json: fixture.seed
+    }), "security-alert");
     alert.append(
       el("span", "Critical", "security-severity"),
       el("strong", fixture.seed.display_name),
       el("span", "FILESVR-01 · Finance file service"),
-      el("small", `evt-ransom-1 · 16:40 UTC · ${current === last ? (reviewed ? "Reviewed" : "Awaiting review") : "Investigating"}`)
+      el("small", `evt-ransom-1 · 16:40 UTC · ${current === 7 ? (reviewed ? "Reviewed" : "Awaiting review") : "Investigating"}`)
     );
     queue.append(alert);
   }
 
   notification.replaceChildren();
-  if (current < last) {
+  if (current < 7) {
     notification.append(el("p", "No pending reviews.", "security-empty"));
   } else {
-    const note = el("div", undefined, "security-notification");
+    const note = button("", () => {
+      reportOpen = true;
+      renderBrief();
+      brief.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" });
+    }, "security-notification");
     note.append(
       el("strong", reviewed ? "Review recorded" : "Critical incident ready for review"),
       el("span", `${fixture.incidentId} · FILESVR-01`),
-      el("span", "Analyst report shown below")
+      el("span", reviewed ? "Open analyst brief →" : "Review findings & next steps →")
     );
     notification.append(note);
   }
 
   output.replaceChildren();
   if (current < 0) {
-    output.append(el("p", "Simulate an alert to follow AI automation from queue intake to the analyst report.", "security-empty"));
-    brief.hidden = true;
-    brief.replaceChildren();
+    output.append(el("p", "Simulate an alert to follow the investigation from queue intake to analyst review.", "security-empty"));
+    renderBrief();
     return;
   }
 
@@ -425,9 +504,8 @@ function draw() {
   if (current === 5) {
     output.append(el("strong", "MISP → targeted source lookups"));
     fixture.intel.forEach((source) => {
-      const row = el("div", undefined, "security-result");
-      row.append(el("strong", source.name), el("p", source.summary));
-      output.append(row);
+      output.append(button("", () => openDetail({ title: source.name, why: source.summary, json: source }), "security-result"));
+      output.lastChild.append(el("strong", source.name), el("span", source.summary));
     });
   }
   if (current === 6) {
@@ -437,40 +515,47 @@ function draw() {
       if (record) output.append(recordRow(record));
     });
   }
-  if (current === last) {
+  if (current === 7) {
     output.append(
-      el("strong", "Assessment delivered to the analyst"),
-      el("p", "The automation stops at a reviewable report. Containment and other high-impact actions are not executed.")
+      el("strong", "Assessment delivered to the analyst inbox"),
+      el("p", "The handoff includes affected systems, evidence, missing telemetry, recommended actions and the investigation history.")
     );
-    renderReport();
+    output.append(button("Open analyst brief", () => {
+      reportOpen = true;
+      renderBrief();
+      brief.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, "primary"));
+  }
+
+  renderBrief();
+  if (current === 7 && reportOpen) {
     requestAnimationFrame(() => {
       brief.scrollIntoView({
         behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
         block: "start"
       });
     });
-  } else {
-    brief.hidden = true;
-    brief.replaceChildren();
   }
 }
 
-playBtn.addEventListener("click", () => (playing ? pause() : start()));
-nextBtn.addEventListener("click", () => { pause(); advance(); });
-resetBtn.addEventListener("click", () => {
+playBtn.onclick = () => (playing ? pause() : start());
+nextBtn.onclick = () => { pause(); advance(); };
+resetBtn.onclick = () => {
   pause();
   current = -1;
   reviewed = false;
+  reportOpen = false;
   draw();
-});
-pace.addEventListener("change", () => { if (playing) schedule(); });
+};
+pace.onchange = () => { if (playing) schedule(); };
 
-fetch("./siem-fixture.json")
+fetch("./siem-fixture.json?v=report")
   .then((r) => {
-    if (!r.ok) throw new Error("Could not load example fixture");
+    if (!r.ok) throw new Error("Missing SIEM fixture");
     return r.json();
   })
   .then((data) => {
+    if (!data.incident || !data.analysis) throw new Error("Fixture missing incident/analysis for analyst report");
     fixture = data;
     buildChrome();
     draw();
