@@ -1,0 +1,229 @@
+{
+  "name": "ai-standardization-matrix",
+  "version": "1.0.0",
+  "description": "Practical maturity matrix for building inspectable, scoped, reviewable AI automation.",
+  "source": "Derived from NotoriousPOG/ai-security-architecture-lab engineering patterns.",
+  "maturityLevels": [
+    { "id": "L0", "name": "Absent", "meaning": "Control missing or easily bypassed" },
+    { "id": "L1", "name": "Basic", "meaning": "Present for the happy path" },
+    { "id": "L2", "name": "Standard", "meaning": "Enforced in code, with tests or evals" },
+    { "id": "L3", "name": "Hardened", "meaning": "Production-grade authz, budgets, audit, negative controls" }
+  ],
+  "productionGate": {
+    "requiredMinLevel": "L2",
+    "controlsAlways": ["C01", "C02", "C03", "C04", "C06", "C08", "C11"],
+    "controlsWhenPresent": {
+      "retrieval": ["C05"],
+      "investigationBriefs": ["C07"],
+      "writePaths": ["C09"],
+      "memory": ["C10"],
+      "evaluatedClaim": ["C12"]
+    }
+  },
+  "controls": [
+    {
+      "id": "C01",
+      "domain": "Ingress & schema",
+      "rule": "Validate untrusted input with strict schemas before the model sees it",
+      "labSignals": ["Zod IncidentSchema / alert envelope"],
+      "levels": {
+        "L0": "Free-form JSON/text enters the agent",
+        "L1": "Schema exists for the happy path",
+        "L2": "Strict schema rejects unknown fields on every ingress path",
+        "L3": "Schema plus semantic checks; invalid input never reaches the model"
+      },
+      "verify": {
+        "L1": "Example payload parses",
+        "L2": "Unit tests for valid/invalid/extra fields",
+        "L3": "Fuzz or property tests; versioned schema changelog"
+      }
+    },
+    {
+      "id": "C02",
+      "domain": "Scope & tenancy",
+      "rule": "Bind work to tenant, time, and entity scope; reject out-of-scope data",
+      "labSignals": ["Tenant scope checks", "Time window filters", "Source-ID dedup"],
+      "levels": {
+        "L0": "Global corpus / all tenants visible",
+        "L1": "Soft filter in prompt text",
+        "L2": "Code filters by tenant, time, entity; mismatch fails closed",
+        "L3": "Durable dedup; transactional outbox; server-enforced scope on every tool"
+      },
+      "verify": {
+        "L1": "Prompt mentions tenant",
+        "L2": "Tests prove cross-tenant rows are dropped",
+        "L3": "Forged tenant in tool args is denied"
+      }
+    },
+    {
+      "id": "C03",
+      "domain": "Auth & identity",
+      "rule": "Authority comes from the authenticated session, never from model text",
+      "labSignals": ["Caller-bound chat token", "Origin/Host checks", "Ephemeral runtime token"],
+      "levels": {
+        "L0": "Tools run as a shared god token",
+        "L1": "Permissions requested only in the system prompt",
+        "L2": "Tools inherit authenticated caller; model cannot invent user IDs",
+        "L3": "Short-lived tokens, expiry/revocation, least privilege per tool"
+      },
+      "verify": {
+        "L1": "Docs say auth later",
+        "L2": "Tool handlers require session/token",
+        "L3": "Forged caller identity rejected"
+      }
+    },
+    {
+      "id": "C04",
+      "domain": "Tool contracts",
+      "rule": "Allowlist tools; validate arguments and results; no open shell/HTTP by default",
+      "labSignals": ["Plugin dispatcher with Zod I/O", "MCP allowlist pattern"],
+      "levels": {
+        "L0": "Free-form code execution or arbitrary HTTP",
+        "L1": "Named tools with weak or no arg checks",
+        "L2": "Schema on args and results; unknown tools rejected",
+        "L3": "Read-only by default; dangerous tools dual-controlled; audited calls"
+      },
+      "verify": {
+        "L1": "Tool list documented",
+        "L2": "Unit tests for bad args / unknown tool",
+        "L3": "Trace shows validated call to result"
+      }
+    },
+    {
+      "id": "C05",
+      "domain": "Retrieval & RAG",
+      "rule": "Search approved corpora only; cite only what this run retrieved",
+      "labSignals": ["Tenant/approved runbook search", "Cite-only-retrieved knowledge IDs"],
+      "levels": {
+        "L0": "Whole dump into context",
+        "L1": "Search without filters",
+        "L2": "Tenant and approved filters; top-K; source IDs returned",
+        "L3": "Cite-only-retrieved enforced; guidance cannot authorize actions"
+      },
+      "verify": {
+        "L1": "Demo retrieves something",
+        "L2": "Retrieval probes with expected IDs",
+        "L3": "Unknown knowledge ID rejected; empty-query control"
+      }
+    },
+    {
+      "id": "C06",
+      "domain": "Evidence integrity",
+      "rule": "Findings must reference known evidence/entity IDs; invent nothing",
+      "labSignals": ["validateAnalysis against known IDs"],
+      "levels": {
+        "L0": "Free prose findings",
+        "L1": "Model asked to cite sources",
+        "L2": "Application validates IDs on structured report",
+        "L3": "Bounded repair; no substitute answer for failed live runs"
+      },
+      "verify": {
+        "L1": "Citations look plausible",
+        "L2": "Validator rejects invented IDs",
+        "L3": "Negative eval: invented evidence fails"
+      }
+    },
+    {
+      "id": "C07",
+      "domain": "Reasoning hygiene",
+      "rule": "Separate facts, hypotheses, alternatives, and missing evidence",
+      "labSignals": ["Hypothesis status fields", "Alternatives and needed evidence", "Outcome attribution rules"],
+      "levels": {
+        "L0": "Narrative blends facts and guesses",
+        "L1": "Prompt asks for caution",
+        "L2": "Schema separates findings, hypotheses, limitations",
+        "L3": "Attribution rules; graph proposals use existing node IDs only"
+      },
+      "verify": {
+        "L1": "Sample output looks careful",
+        "L2": "Schema rejects missing hypothesis fields",
+        "L3": "Regression cases for misattribution"
+      }
+    },
+    {
+      "id": "C08",
+      "domain": "Agent bounds",
+      "rule": "Cap turns, tools, repairs, and wall time; stop identical loops",
+      "labSignals": ["Max rounds/tools/repairs/timeout", "Repeat fingerprint stop"],
+      "levels": {
+        "L0": "Unbounded while-loop",
+        "L1": "Soft do-not-loop prompt",
+        "L2": "Hard caps plus cancel path",
+        "L3": "Identical-call detection; retry policy; budgets in traces"
+      },
+      "verify": {
+        "L1": "Hope",
+        "L2": "Config constants exist",
+        "L3": "Tests hit each limit and abort cleanly"
+      }
+    },
+    {
+      "id": "C09",
+      "domain": "Human control",
+      "rule": "Default action is a reviewable draft; high-impact acts need a person",
+      "labSignals": ["Analyst brief / review acknowledgement", "No automatic containment"],
+      "levels": {
+        "L0": "Agent executes high-impact actions",
+        "L1": "Human in the loop by convention only",
+        "L2": "Product path ends in draft/brief with owners",
+        "L3": "Explicit approval gate and audit for high-impact tools"
+      },
+      "verify": {
+        "L1": "Demo auto-acts",
+        "L2": "UI/API has review state",
+        "L3": "Write-back disabled unless flagged; approval recorded"
+      }
+    },
+    {
+      "id": "C10",
+      "domain": "Memory",
+      "rule": "Explicit save only; label untrusted; isolate by tenant; cap retention",
+      "labSignals": ["Explicit analyst notes", "Tenant keys", "Session expiry"],
+      "levels": {
+        "L0": "Model writes durable facts automatically",
+        "L1": "Notes exist mixed with evidence",
+        "L2": "Explicit save/delete; caps; untrusted label",
+        "L3": "Session expiry; evidence change invalidates conversation"
+      },
+      "verify": {
+        "L1": "localStorage dump",
+        "L2": "Tenant isolation test",
+        "L3": "Deletion removes note from next context"
+      }
+    },
+    {
+      "id": "C11",
+      "domain": "Secrets & data hygiene",
+      "rule": "No credentials in repos, exports, or browser storage of provider keys",
+      "labSignals": ["Runtime-only provider keys", "Gitleaks / publication review"],
+      "levels": {
+        "L0": "Keys in repo or committed env files",
+        "L1": "gitignore only",
+        "L2": "Runtime-only secrets; redaction; secret scan before push",
+        "L3": "Forget/clear controls; publication review checklist"
+      },
+      "verify": {
+        "L1": "Accidental key in history risk",
+        "L2": "Secret scanner clean",
+        "L3": "Trace export contains no provider key"
+      }
+    },
+    {
+      "id": "C12",
+      "domain": "Evaluation & honesty",
+      "rule": "Test citations, tools, and negatives; label demo vs live; state limits",
+      "labSignals": ["DeepEval citation and tool metrics", "Negative controls", "Offline vs live labeling"],
+      "levels": {
+        "L0": "Manual eyeballing only",
+        "L1": "A few golden transcripts",
+        "L2": "Automated citation, tool-correctness, and negative controls",
+        "L3": "Calibrated judge metrics; stale-report detection; clear demo vs live labels"
+      },
+      "verify": {
+        "L1": "Screenshot",
+        "L2": "CI/eval exits nonzero on failure",
+        "L3": "Negative controls fail closed"
+      }
+    }
+  ]
+}
