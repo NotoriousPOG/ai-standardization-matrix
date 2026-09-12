@@ -15,7 +15,7 @@ Validate every untrusted boundary with a strict schema before model context is b
 | Free-form JSON/text enters the agent | Schema exists for the happy path | Strict schema (reject unknown fields); applied on every ingress path | Schema + semantic checks (totals, references, enums); invalid input never reaches the model |
 | **Verify** | Example payload parses | Unit tests for valid/invalid/extra fields | Fuzz or property tests; versioned schema changelog |
 
-**Lab signal:** Zod `IncidentSchema` / alert envelope before investigation starts.
+**Example signal:** Zod `IncidentSchema` / alert envelope before investigation starts.
 
 ---
 
@@ -28,7 +28,7 @@ Every run is bound to an explicit scope. Out-of-scope data is filtered or reject
 | Global corpus / all tenants visible | Soft filter in prompt text | Code filters by tenant, time window, and entity; mismatch fails closed | Durable dedup keys; transactional outbox; server-enforced scope on every tool |
 | **Verify** | Prompt mentions tenant | Tests prove cross-tenant rows are dropped | Integration test: forged tenant in tool args is denied |
 
-**Lab signal:** `demo_finance` / `northwind` scope checks; windowed event selection; source-ID dedup.
+**Example signal:** `demo_finance` / `northwind` scope checks; windowed event selection; source-ID dedup.
 
 ---
 
@@ -41,7 +41,7 @@ The model proposes; the backend authorizes. Identity is never taken from model o
 | Tools run as a shared god token | “Please respect permissions” in the system prompt | Tools inherit the authenticated caller; model cannot invent user IDs | Short-lived tokens, expiry/revocation, Host/Origin checks, least privilege per tool |
 | **Verify** | Docs say “auth later” | Tool handlers require session/token | Negative test: forged caller identity rejected |
 
-**Lab signal:** Chat token bound to authenticated user; live runtime Origin/Host + ephemeral runtime token.
+**Example signal:** Chat token bound to authenticated user; live runtime Origin/Host + ephemeral runtime token.
 
 ---
 
@@ -54,7 +54,7 @@ Tools are an allowlisted registry with validated inputs and outputs.
 | Free-form code execution or arbitrary HTTP | Named tools, weak/no arg checks | Zod (or equivalent) on args and results; unknown tools rejected | Read-only by default; no shell/containment/email unless separately gated; audit every call |
 | **Verify** | Tool list documented | Unit tests for bad args / unknown tool | Trace shows validated call → result; dangerous tools absent or dual-controlled |
 
-**Lab signal:** `search_knowledge`, `lookup_asset`, `check_telemetry` + `finish_analysis` with schema; MCP allowlist pattern.
+**Example signal:** `search_knowledge`, `lookup_asset`, `check_telemetry` + `finish_analysis` with schema; MCP allowlist pattern.
 
 ---
 
@@ -67,7 +67,7 @@ Retrieval is scoped, approved, and citation-gated. Guidance is not permission.
 | Whole dump into context | Keyword/vector search, no filters | Tenant + approved-document filters; top-K cap; source IDs/versions returned | Cite-only-retrieved rule enforced in code; empty result is a valid outcome; guidance cannot authorize actions |
 | **Verify** | Demo retrieves something | Retrieval probes with expected IDs | Eval: unknown knowledge ID rejected; empty-query control |
 
-**Lab signal:** Tenant/approved runbook search; knowledge IDs only from this run’s `search_knowledge` results.
+**Example signal:** Tenant/approved runbook search; knowledge IDs only from this run’s `search_knowledge` results.
 
 ---
 
@@ -80,7 +80,7 @@ Outputs that claim evidence must reference IDs that exist in the validated conte
 | Free prose “findings” | Model asked to cite sources | Application validates evidence/entity/graph IDs on the structured report | Bounded repair on failure; no substitute prepared answer for a failed live run |
 | **Verify** | Citations look plausible | Validator rejects invented E/K IDs | Negative eval control: invented evidence must fail |
 
-**Lab signal:** `validateAnalysis` against known evidence and retrieved citations.
+**Example signal:** `validateAnalysis` against known evidence and retrieved citations.
 
 ---
 
@@ -93,7 +93,7 @@ Separate observation from inference. Hypotheses stay labeled and falsifiable.
 | Narrative blends facts and guesses | Prompt asks for caution | Schema fields for findings vs hypotheses vs limitations; hypotheses require alternatives + needed evidence | Attribution rules (e.g. network outcome ≠ file outcome); graph proposals use existing node IDs only |
 | **Verify** | Sample output looks careful | Schema rejects missing hypothesis fields | Regression cases for misattribution |
 
-**Lab signal:** Graph proposals H1/H2 with status `hypothesis`, alternatives, and needed evidence; analyst instructions on outcome attribution.
+**Example signal:** Graph proposals H1/H2 with status `hypothesis`, alternatives, and needed evidence; analyst instructions on outcome attribution.
 
 ---
 
@@ -106,7 +106,7 @@ Every autonomous loop has hard limits.
 | Unbounded while-loop | Soft “don’t loop forever” prompt | Max model turns, max tool calls, per-turn tool cap, wall-clock timeout, cancel path | Identical-call detection; transient retry policy; repair attempt cap; budget visible in traces |
 | **Verify** | Hope | Config constants exist | Tests hit each limit and abort cleanly |
 
-**Lab signal:** ≤7 turns, ≤10 tools, ≤4 tools/turn, ≤2 repairs, 4-minute timeout, repeat fingerprint stop.
+**Example signal:** ≤7 turns, ≤10 tools, ≤4 tools/turn, ≤2 repairs, 4-minute timeout, repeat fingerprint stop.
 
 ---
 
@@ -119,7 +119,7 @@ Default deliverable is a reviewable artifact. State-changing actions are opt-in 
 | Agent executes containment/spend/send | Human “in the loop” only by convention | Product path ends in draft/brief/inbox; actions list owners, not automatic execution | Explicit approval gate for high-impact tools; audit who approved |
 | **Verify** | Demo auto-acts | UI/API has review state | Production write-back disabled unless flagged; approval recorded |
 
-**Lab signal:** Analyst brief + Mark reviewed; “do not execute containment”; CRM draft + human review stage.
+**Example signal:** Analyst brief + Mark reviewed; “do not execute containment”; CRM draft + human review stage.
 
 ---
 
@@ -132,7 +132,7 @@ Memory is explicit, scoped, limited, and never silently promoted to fact.
 | Model writes durable “facts” automatically | Notes exist, mixed with evidence | Explicit save/delete; tenant key; size/count caps; labeled untrusted in prompts | Session expiry; evidence change invalidates conversation; no auto-promotion of hypotheses |
 | **Verify** | localStorage dump | Tenant isolation test | Deletion removes note from next context |
 
-**Lab signal:** Analyst notes (10-cap, tenant key); sessions expire; notes labeled untrusted.
+**Example signal:** Analyst notes (10-cap, tenant key); sessions expire; notes labeled untrusted.
 
 ---
 
@@ -145,7 +145,7 @@ Credentials and real sensitive data stay out of source, demos, and client storag
 | Keys in repo or committed `.env` | `.gitignore` only | Runtime-only secrets; redaction in traces/exports; secret scan before push | Least-privilege providers; forget/clear controls; publication review checklist |
 | **Verify** | Accidental key in history | gitleaks / equivalent clean | Trace export contains no provider key |
 
-**Lab signal:** OpenRouter key in process memory only; SECURITY-REVIEW publication checks; gitleaks.
+**Example signal:** OpenRouter key in process memory only; SECURITY-REVIEW publication checks; gitleaks.
 
 ---
 
@@ -158,7 +158,7 @@ Prove the controls. Do not overclaim demo quality as production quality.
 | Manual eyeballing only | A few golden transcripts | Automated citation, tool-correctness, and negative-control metrics | Optional faithfulness/judge with calibrated thresholds; stale-report detection; clear demo vs live labeling |
 | **Verify** | Screenshot | CI/eval exits nonzero on failure | Negative controls fail closed; live vs prepared paths labeled in UI/docs |
 
-**Lab signal:** DeepEval custom citation metrics, ToolCorrectnessMetric, invented-ID negative controls; offline vs `?mode=live` separation.
+**Example signal:** DeepEval custom citation metrics, ToolCorrectnessMetric, invented-ID negative controls; offline vs `?mode=live` separation.
 
 ---
 

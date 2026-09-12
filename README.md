@@ -2,7 +2,7 @@
 
 A practical standard for building **AI automation** that stays inspectable, scoped, and reviewable.
 
-Derived from engineering patterns in [ai-security-architecture-lab](https://github.com/NotoriousPOG/ai-security-architecture-lab) (UNN.DEV): schema validation at trust boundaries, allowlisted tools, scoped retrieval, cited outputs, bounded agent loops, and human review before action.
+Derived from UNN.DEV AI automation engineering patterns: schema validation at trust boundaries, allowlisted tools, scoped retrieval, cited outputs, bounded agent loops, and human review before action.
 
 This is not a compliance certificate. It is a build standard: clear controls, maturity levels, and verification signals you can apply to any agent, RAG workflow, or automation loop.
 
@@ -54,22 +54,22 @@ The matrix turns those failure modes into **required controls**.
 | L2 | Standard | Enforced in code, with tests or evals |
 | L3 | Hardened | Production-grade: authz, budgets, audit, negative controls, repair limits |
 
-## How it maps to the architecture lab
+## Pattern origins (examples behind each control)
 
-| Lab pattern | Matrix control |
+| Pattern | Matrix control |
 | --- | --- |
-| Zod alert/incident/report schemas | C01, C06 |
+| Strict alert/incident/report schemas | C01, C06 |
 | Tenant + time window + dedup key | C02 |
 | Short-lived caller token for tools | C03 |
-| MCP / plugin dispatcher with Zod I/O | C04 |
+| MCP / plugin dispatcher with I/O contracts | C04 |
 | Approved, tenant-filtered runbook search | C05 |
 | Evidence/knowledge ID validation on finish | C06 |
 | Hypotheses marked unverified + alternatives | C07 |
 | Max rounds, tool calls, repairs, timeout | C08 |
 | Analyst inbox / draft before approval | C09 |
 | Explicit analyst notes, not auto-memory | C10 |
-| Runtime-only provider keys; gitleaks review | C11 |
-| DeepEval citation + tool + negative metrics | C12 |
+| Runtime-only provider keys; secret scanning | C11 |
+| Citation + tool + negative-control evals | C12 |
 
 See [ADOPTION.md](ADOPTION.md) for rollout by project stage.
 
@@ -82,7 +82,6 @@ See [ADOPTION.md](ADOPTION.md) for rollout by project stage.
 
 ## Related work
 
-- [ai-security-architecture-lab](https://github.com/NotoriousPOG/ai-security-architecture-lab) — interactive walkthrough of these patterns
 - [nist-ai-rmf-skill](https://github.com/NotoriousPOG/nist-ai-rmf-skill) — NIST AI RMF assessment skill for Cursor
 - Optional alignment notes: Map ≈ C01–C07, Measure ≈ C12, Manage ≈ C08–C11, Govern ≈ org policy wrapping this matrix
 
