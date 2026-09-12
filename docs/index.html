@@ -17,29 +17,30 @@ button:disabled{opacity:.55;cursor:not-allowed}
 a{color:var(--accent);text-underline-offset:4px}
 .app{display:grid;grid-template-columns:260px minmax(0,1fr);min-height:100vh}
 .sidebar{border-right:1px solid var(--line);padding:30px 20px;display:flex;flex-direction:column;gap:24px;background:linear-gradient(165deg,#191e30,#171321 75%)}
-.brand{display:flex;flex-direction:column;align-items:flex-start;gap:14px;color:var(--text);text-decoration:none;font-size:13px;font-weight:700;letter-spacing:1px}
+.brand{display:flex;flex-direction:column;align-items:flex-start;gap:14px;color:var(--text);text-decoration:none;font-size:13px;font-weight:700;letter-spacing:1px;background:transparent;border:0;padding:0;text-align:left;width:100%}
+.brand:hover{background:transparent;border-color:transparent}
 .brand-logo{display:block;width:200px;max-width:100%;height:auto}
 .brand small{display:block;font-size:14px;letter-spacing:0;font-weight:400;color:var(--muted)}
 .nav-label,.eyebrow{font-size:12px;letter-spacing:1.4px;font-weight:700;color:var(--accent);margin:0}
 .nav-label{color:var(--muted);font-size:11px;margin:0}
 nav{display:flex;flex-direction:column;gap:8px}
-nav a,nav button{display:flex;align-items:center;gap:12px;text-align:left;padding:13px 10px;background:transparent;border-color:transparent;font-size:15px;line-height:1.5;font-weight:500;text-decoration:none;color:var(--text)}
-nav a span,nav button span{color:var(--muted);font-size:12px}
-nav a[aria-current=page],nav button[aria-current=page]{background:#30283f;border:1px solid #695880;color:#fff;border-radius:9px}
-nav a[aria-current=page] span{color:var(--accent)}
+nav button{display:flex;align-items:center;gap:12px;text-align:left;padding:13px 10px;background:transparent;border-color:transparent;font-size:15px;line-height:1.5;font-weight:500;color:var(--text);width:100%}
+nav button span{color:var(--muted);font-size:12px}
+nav button[aria-current=page]{background:#30283f;border:1px solid #695880;color:#fff;border-radius:9px}
+nav button[aria-current=page] span{color:var(--accent)}
 .sidebar-foot{margin-top:auto;font-size:12px;color:var(--muted)}
 main{padding:36px 42px 28px;min-width:0}
-header{display:flex;gap:24px;justify-content:space-between;align-items:flex-start;margin-bottom:24px}
+.page-header{display:flex;gap:24px;justify-content:space-between;align-items:flex-start;margin-bottom:24px}
 h1{font-size:clamp(28px,2.7vw,40px);line-height:1.2;letter-spacing:-1px;font-weight:650;margin:12px 0}
 h2{font-size:22px;line-height:1.3;margin:0 0 16px}
 h3{font-size:20px;margin:0 0 12px}
 p{margin:12px 0}
-#subtitle{color:var(--muted);max-width:750px;margin:0}
+.subtitle{color:var(--muted);max-width:750px;margin:0}
 .primary{background:var(--accent);border-color:var(--accent);color:#17121f}
 .primary:hover{background:#c6afe6;border-color:#c6afe6}
-a.primary{display:inline-block;text-decoration:none;border:1px solid var(--accent);border-radius:9px;padding:9px 15px;font-weight:600}
 .subtle{background:transparent;font-size:14px}
 .badge{border:1px solid #695880;background:#30283f;border-radius:20px;padding:5px 12px;color:#ddc9f5;font-size:12px;white-space:nowrap}
+.view[hidden]{display:none!important}
 .flow-controls{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:8px 0 22px}
 .flow-controls label{margin-left:auto;color:var(--muted);font-size:14px}
 select{background:#161a29;color:var(--text);border:1px solid #61698a;border-radius:7px;padding:9px 32px 9px 12px;font-size:15px;max-width:100%}
@@ -69,12 +70,28 @@ select{background:#161a29;color:var(--text);border:1px solid #61698a;border-radi
 .control-card span{display:block;margin-top:8px;color:var(--muted);font-size:14px;line-height:1.5}
 .security-json{font-size:15px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;max-height:300px;overflow:auto;background:var(--bg);padding:18px;border-radius:8px;border:1px solid var(--line);margin:14px 0 0;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
 .links-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.matrix-grid{display:grid;gap:14px}
+.matrix-card{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:20px;overflow:hidden}
+.matrix-card h3{margin:0 0 8px;font-size:18px}
+.matrix-card .rule{color:var(--muted);margin:0 0 16px;font-size:15px}
+.level-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.level{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:12px;min-width:0}
+.level strong{display:block;font-size:12px;letter-spacing:1px;color:var(--accent);margin-bottom:8px}
+.level span{display:block;font-size:13px;color:var(--muted);line-height:1.45}
+.level.standard{border-color:#695880;background:#30283f}
+.check-list,.score-list{display:grid;gap:10px}
+.check-item,.score-item{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:14px 16px}
+.check-item input{width:18px;height:18px;margin-top:3px;accent-color:var(--accent)}
+.score-item select{justify-self:start;margin-top:8px}
+.score-summary{margin-top:20px;padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.score-summary strong{color:#ddc9f5}
+.doc-note{color:var(--muted);font-size:14px;margin:0 0 18px}
 footer{display:flex;justify-content:space-between;gap:16px;margin-top:40px;padding-top:20px;border-top:1px solid #2e344c;color:var(--muted);font-size:12px}
 .skip{position:absolute;top:-70px;left:20px;z-index:10;background:var(--panel);padding:12px}
 .skip:focus{top:10px}
 @keyframes packet-pulse{50%{opacity:.45}}
 @media(max-width:1100px){.app{grid-template-columns:220px minmax(0,1fr)}main{padding:28px 24px}.security-workspace{grid-template-columns:1fr}}
-@media(max-width:1000px){.security-track{gap:18px;grid-template-columns:repeat(2,minmax(0,1fr))}.security-stage:nth-child(2n)::after{display:none}.security-stage:not(:nth-child(2n))::after{right:-17px;font-size:16px}}
+@media(max-width:1000px){.security-track{gap:18px;grid-template-columns:repeat(2,minmax(0,1fr))}.security-stage:nth-child(2n)::after{display:none}.security-stage:not(:nth-child(2n))::after{right:-17px;font-size:16px}.level-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:720px){
   .app{display:block}
   .sidebar{padding:20px;gap:18px;border-right:0;border-bottom:1px solid var(--line)}
@@ -83,31 +100,32 @@ footer{display:flex;justify-content:space-between;gap:16px;margin-top:40px;paddi
   nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
   .nav-label,.sidebar-foot{display:none}
   main{padding:26px 16px}
-  header{flex-wrap:wrap;gap:10px}
+  .page-header{flex-wrap:wrap;gap:10px}
   .flow-controls label{margin-left:0}
   .security-track{gap:16px}
   .security-stage{padding:14px 10px}
   .security-stage strong{font-size:16px}
   .security-pane{padding:18px}
+  .level-grid{grid-template-columns:1fr}
   footer{display:block}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
   </style>
 </head>
 <body>
-<a class="skip" href="#main">Skip to example</a>
+<a class="skip" href="#main">Skip to content</a>
 <div class="app">
   <aside class="sidebar">
-    <a class="brand" href="./">
+    <button class="brand" type="button" data-view="example" aria-label="AI Standardization home">
       <img class="brand-logo" src="./unndev-wide.png" alt="UNN.DEV">
       <span>AI STANDARDIZATION<small>Build matrix</small></span>
-    </a>
+    </button>
     <p class="nav-label">SECTIONS</p>
-    <nav aria-label="Sections">
-      <a href="./" aria-current="page"><span>01</span> SIEM example</a>
-      <a href="https://github.com/NotoriousPOG/ai-standardization-matrix/blob/main/MATRIX.md"><span>02</span> Full matrix</a>
-      <a href="https://github.com/NotoriousPOG/ai-standardization-matrix/blob/main/CHECKLIST.md"><span>03</span> Build checklist</a>
-      <a href="https://github.com/NotoriousPOG/ai-standardization-matrix/blob/main/templates/scorecard.md"><span>04</span> Scorecard</a>
+    <nav id="nav" aria-label="Sections">
+      <button type="button" data-view="example"><span>01</span> SIEM example</button>
+      <button type="button" data-view="matrix"><span>02</span> Full matrix</button>
+      <button type="button" data-view="checklist"><span>03</span> Build checklist</button>
+      <button type="button" data-view="scorecard"><span>04</span> Scorecard</button>
     </nav>
     <div class="sidebar-foot">
       <p>Twelve controls · L0–L3 maturity</p>
@@ -116,41 +134,57 @@ footer{display:flex;justify-content:space-between;gap:16px;margin-top:40px;paddi
   </aside>
 
   <main id="main" tabindex="-1">
-    <header>
+    <header class="page-header">
       <div>
-        <p class="eyebrow">BUILD STANDARD</p>
-        <h1>How to build AI automation</h1>
-        <p id="subtitle">Use this matrix when you design agents, RAG loops, and tool orchestration. The walkthrough below is one example: a SIEM critical alert moving through validation, scoped investigation, cited drafting, and human review.</p>
+        <p class="eyebrow" id="eyebrow">BUILD STANDARD</p>
+        <h1 id="title">How to build AI automation</h1>
+        <p class="subtitle" id="subtitle"></p>
       </div>
-      <span class="badge">Example path</span>
+      <span class="badge" id="badge">Example path</span>
     </header>
 
-    <section class="security-simulation" id="sim" aria-label="SIEM alert automation example">
-      <div class="flow-controls">
-        <button class="primary" id="play" type="button">Simulate critical alert</button>
-        <button class="subtle" id="next" type="button">Next step</button>
-        <button class="subtle" id="reset" type="button">Restart</button>
-        <label for="pace">Pace</label>
-        <select id="pace">
-          <option value="2600">Explain · 2.6s</option>
-          <option value="1100">Quick · 1.1s</option>
-          <option value="5000">Slow · 5s</option>
-        </select>
+    <section class="view" id="view-example" data-view-panel="example">
+      <div class="security-simulation" id="sim" aria-label="SIEM alert automation example">
+        <div class="flow-controls">
+          <button class="primary" id="play" type="button">Simulate critical alert</button>
+          <button class="subtle" id="next" type="button">Next step</button>
+          <button class="subtle" id="reset" type="button">Restart</button>
+          <label for="pace">Pace</label>
+          <select id="pace">
+            <option value="2600">Explain · 2.6s</option>
+            <option value="1100">Quick · 1.1s</option>
+            <option value="5000">Slow · 5s</option>
+          </select>
+        </div>
+        <div class="security-track" id="track" aria-label="Automation stages"></div>
+        <p class="security-status" id="status" role="status" hidden></p>
+        <div class="security-workspace">
+          <section class="security-pane">
+            <h2>Detection queue</h2>
+            <div id="queue"></div>
+          </section>
+          <section class="security-pane">
+            <h2>Investigation</h2>
+            <div id="output"></div>
+          </section>
+        </div>
       </div>
+    </section>
 
-      <div class="security-track" id="track" aria-label="Automation stages"></div>
-      <p class="security-status" id="status" role="status" hidden></p>
+    <section class="view" id="view-matrix" data-view-panel="matrix" hidden>
+      <p class="doc-note">Score each control at the highest maturity you can prove. Production target is L2 on the gate controls.</p>
+      <div class="matrix-grid" id="matrix-grid"></div>
+    </section>
 
-      <div class="security-workspace">
-        <section class="security-pane">
-          <h2>Detection queue</h2>
-          <div id="queue"></div>
-        </section>
-        <section class="security-pane">
-          <h2>Investigation</h2>
-          <div id="output"></div>
-        </section>
-      </div>
+    <section class="view" id="view-checklist" data-view-panel="checklist" hidden>
+      <p class="doc-note">Use this in design reviews and PRs. Check only what you can prove. State is saved in this browser.</p>
+      <div class="check-list" id="checklist"></div>
+    </section>
+
+    <section class="view" id="view-scorecard" data-view-panel="scorecard" hidden>
+      <p class="doc-note">Pick L0–L3 for each control. The gate summary updates live. Saved in this browser only.</p>
+      <div class="score-list" id="scorecard"></div>
+      <div class="score-summary" id="score-summary"></div>
     </section>
 
     <footer>
@@ -161,78 +195,89 @@ footer{display:flex;justify-content:space-between;gap:16px;margin-top:40px;paddi
 </div>
 
 <script>
-const CONTROLS = {
-  C01: ["Ingress & schema", "Validate untrusted input with strict schemas before the model sees it"],
-  C02: ["Scope & tenancy", "Bind work to tenant, time, and entity scope; reject out-of-scope data"],
-  C03: ["Auth & identity", "Authority comes from the authenticated session, never from model text"],
-  C04: ["Tool contracts", "Allowlist tools; validate arguments and results; no open shell/HTTP by default"],
-  C05: ["Retrieval & RAG", "Search approved corpora only; cite only what this run retrieved"],
-  C06: ["Evidence integrity", "Findings must reference known evidence/entity IDs; invent nothing"],
-  C07: ["Reasoning hygiene", "Separate facts, hypotheses, alternatives, and missing evidence"],
-  C08: ["Agent bounds", "Cap turns, tools, repairs, and wall time; stop identical loops"],
-  C09: ["Human control", "Default action is a reviewable draft; high-impact acts need a person"],
-  C10: ["Memory", "Explicit save only; label untrusted; isolate by tenant; cap retention"],
-  C11: ["Secrets & data hygiene", "No credentials in repos, exports, or browser storage of provider keys"],
-  C12: ["Evaluation & honesty", "Test citations, tools, and negatives; label fixtures vs production; state limits"]
+const META = {
+  example: {
+    eyebrow: "BUILD STANDARD",
+    title: "How to build AI automation",
+    subtitle: "Use this matrix when you design agents, RAG loops, and tool orchestration. The walkthrough below is one example: a SIEM critical alert moving through validation, scoped investigation, cited drafting, and human review.",
+    badge: "Example path"
+  },
+  matrix: {
+    eyebrow: "CONTROLS",
+    title: "Full standardization matrix",
+    subtitle: "Twelve domains across L0 Absent, L1 Basic, L2 Standard, and L3 Hardened. L2 is the production bar for live model-to-tool loops.",
+    badge: "L0–L3"
+  },
+  checklist: {
+    eyebrow: "PR GATE",
+    title: "Build checklist",
+    subtitle: "Must-pass items for any live agent loop, plus controls that apply when retrieval, memory, or write paths exist.",
+    badge: "Design + PR"
+  },
+  scorecard: {
+    eyebrow: "ASSESS",
+    title: "System scorecard",
+    subtitle: "Score your automation against the matrix. Production gate requires L2+ on C01–C08 and C11.",
+    badge: "Local only"
+  }
 };
 
+const CONTROLS = [
+  { id: "C01", domain: "Ingress & schema", rule: "Validate untrusted input with strict schemas before the model sees it",
+    levels: { L0: "Free-form JSON/text enters the agent", L1: "Schema exists for the happy path", L2: "Strict schema rejects unknown fields on every ingress path", L3: "Schema plus semantic checks; invalid input never reaches the model" }, gate: true },
+  { id: "C02", domain: "Scope & tenancy", rule: "Bind work to tenant, time, and entity scope; reject out-of-scope data",
+    levels: { L0: "Global corpus / all tenants visible", L1: "Soft filter in prompt text", L2: "Code filters by tenant, time, entity; mismatch fails closed", L3: "Durable dedup; transactional outbox; server-enforced scope on every tool" }, gate: true },
+  { id: "C03", domain: "Auth & identity", rule: "Authority comes from the authenticated session, never from model text",
+    levels: { L0: "Tools run as a shared god token", L1: "Permissions requested only in the system prompt", L2: "Tools inherit authenticated caller; model cannot invent user IDs", L3: "Short-lived tokens, expiry/revocation, least privilege per tool" }, gate: true },
+  { id: "C04", domain: "Tool contracts", rule: "Allowlist tools; validate arguments and results; no open shell/HTTP by default",
+    levels: { L0: "Free-form code execution or arbitrary HTTP", L1: "Named tools with weak or no arg checks", L2: "Schema on args and results; unknown tools rejected", L3: "Read-only by default; dangerous tools dual-controlled; audited calls" }, gate: true },
+  { id: "C05", domain: "Retrieval & RAG", rule: "Search approved corpora only; cite only what this run retrieved",
+    levels: { L0: "Whole dump into context", L1: "Search without filters", L2: "Tenant and approved filters; top-K; source IDs returned", L3: "Cite-only-retrieved enforced; guidance cannot authorize actions" }, gate: false },
+  { id: "C06", domain: "Evidence integrity", rule: "Findings must reference known evidence/entity IDs; invent nothing",
+    levels: { L0: "Free prose findings", L1: "Model asked to cite sources", L2: "Application validates IDs on structured report", L3: "Bounded repair; no substitute answer for failed live runs" }, gate: true },
+  { id: "C07", domain: "Reasoning hygiene", rule: "Separate facts, hypotheses, alternatives, and missing evidence",
+    levels: { L0: "Narrative blends facts and guesses", L1: "Prompt asks for caution", L2: "Schema separates findings, hypotheses, limitations", L3: "Attribution rules; graph proposals use existing node IDs only" }, gate: false },
+  { id: "C08", domain: "Agent bounds", rule: "Cap turns, tools, repairs, and wall time; stop identical loops",
+    levels: { L0: "Unbounded while-loop", L1: "Soft do-not-loop prompt", L2: "Hard caps plus cancel path", L3: "Identical-call detection; retry policy; budgets in traces" }, gate: true },
+  { id: "C09", domain: "Human control", rule: "Default action is a reviewable draft; high-impact acts need a person",
+    levels: { L0: "Agent executes high-impact actions", L1: "Human in the loop by convention only", L2: "Product path ends in draft/brief with owners", L3: "Explicit approval gate and audit for high-impact tools" }, gate: false },
+  { id: "C10", domain: "Memory", rule: "Explicit save only; label untrusted; isolate by tenant; cap retention",
+    levels: { L0: "Model writes durable facts automatically", L1: "Notes exist mixed with evidence", L2: "Explicit save/delete; caps; untrusted label", L3: "Session expiry; evidence change invalidates conversation" }, gate: false },
+  { id: "C11", domain: "Secrets & data hygiene", rule: "No credentials in repos, exports, or browser storage of provider keys",
+    levels: { L0: "Keys in repo or committed env files", L1: "gitignore only", L2: "Runtime-only secrets; redaction; secret scan before push", L3: "Forget/clear controls; publication review checklist" }, gate: true },
+  { id: "C12", domain: "Evaluation & honesty", rule: "Test citations, tools, and negatives; label fixtures vs production; state limits",
+    levels: { L0: "Manual eyeballing only", L1: "A few golden transcripts", L2: "Automated citation, tool-correctness, and negative controls", L3: "Calibrated judge metrics; stale-report detection; fixture vs production paths labeled" }, gate: false }
+];
+
+const CONTROL_MAP = Object.fromEntries(CONTROLS.map((c) => [c.id, [c.domain, c.rule]]));
+
 const STAGES = [
-  {
-    title: "Validate alert",
-    caption: "Schema at the edge",
-    why: "A SIEM/webhook payload is still untrusted JSON. Parse tenant, host, severity, and time before any model call. Bad shape dies here.",
-    controls: ["C01", "C11"],
-    sample: { tenant: "northwind", id: "evt-ransom-1", host: "FILESVR-01", severity: "critical", time: "2026-09-01T16:40:00Z" }
-  },
-  {
-    title: "Lock scope",
-    caption: "Tenant / host / window",
-    why: "Bind the investigation to one tenant, one host, and a tight time window. Out-of-scope events are dropped in code, not by hoping the prompt remembers.",
-    controls: ["C02"],
-    sample: { tenant: "northwind", host: "FILESVR-01", window: ["2026-09-01T16:30:00Z", "2026-09-01T16:50:00Z"], incidentId: "INC-NW-2041" }
-  },
-  {
-    title: "Bind analyst",
-    caption: "Session auth on tools",
-    why: "Later MCP or SIEM tool calls inherit the authenticated SOC session. The model can propose tools. It cannot invent who is allowed to run them.",
-    controls: ["C03"],
-    sample: { caller: "soc-oncall", tokenTTL: "15m", permissions: ["read:alerts", "read:assets", "read:runbooks"] }
-  },
-  {
-    title: "Investigate",
-    caption: "Bounded tool loop",
-    why: "Allowlisted tools only (related alerts, process/DNS checks). Cap turns, tool calls, and wall time. Identical repeated lookups stop the run.",
-    controls: ["C08", "C04"],
-    sample: { maxRounds: 7, maxToolCalls: 10, tools: ["get_related_alerts", "check_process", "lookup_dns"] }
-  },
-  {
-    title: "Pull runbooks",
-    caption: "Scoped RAG",
-    why: "Retrieve tenant-approved guidance with versions. Runbooks advise. They do not authorize host isolation. Cite only IDs returned in this run.",
-    controls: ["C05"],
-    sample: { passages: ["K1 ransomware triage", "K2 file-server containment", "K3 vuln exposure notes"], approved: true }
-  },
-  {
-    title: "Draft brief",
-    caption: "Cited structured output",
-    why: "Schema-validate the analyst brief. Every finding cites real evidence IDs. Hypotheses stay labeled with alternatives and missing telemetry.",
-    controls: ["C06", "C07"],
-    sample: { assessment: "suspicious", confidence: "medium", findings: 3, hypotheses: 2, inventedIdsRejected: true }
-  },
-  {
-    title: "Human review",
-    caption: "Draft before action",
-    why: "Deliver a reviewable brief with action owners. No silent containment, ticket spam, or auto-memory writes. Optional notes stay untrusted context.",
-    controls: ["C09", "C10"],
-    sample: { deliverable: "analyst brief", autoContain: false, nextOwner: "Infrastructure" }
-  },
-  {
-    title: "Prove it",
-    caption: "Evals & honesty",
-    why: "Automate citation integrity, tool-correctness, and negative controls. Keep fixture playback labeled separately from production SIEM wiring.",
-    controls: ["C12"],
-    sample: { metrics: ["citation_integrity", "tool_correctness", "invented_id_negative"], gate: "L2" }
-  }
+  { title: "Validate alert", caption: "Schema at the edge", why: "A SIEM/webhook payload is still untrusted JSON. Parse tenant, host, severity, and time before any model call. Bad shape dies here.", controls: ["C01", "C11"], sample: { tenant: "northwind", id: "evt-ransom-1", host: "FILESVR-01", severity: "critical", time: "2026-09-01T16:40:00Z" } },
+  { title: "Lock scope", caption: "Tenant / host / window", why: "Bind the investigation to one tenant, one host, and a tight time window. Out-of-scope events are dropped in code, not by hoping the prompt remembers.", controls: ["C02"], sample: { tenant: "northwind", host: "FILESVR-01", window: ["2026-09-01T16:30:00Z", "2026-09-01T16:50:00Z"], incidentId: "INC-NW-2041" } },
+  { title: "Bind analyst", caption: "Session auth on tools", why: "Later MCP or SIEM tool calls inherit the authenticated SOC session. The model can propose tools. It cannot invent who is allowed to run them.", controls: ["C03"], sample: { caller: "soc-oncall", tokenTTL: "15m", permissions: ["read:alerts", "read:assets", "read:runbooks"] } },
+  { title: "Investigate", caption: "Bounded tool loop", why: "Allowlisted tools only (related alerts, process/DNS checks). Cap turns, tool calls, and wall time. Identical repeated lookups stop the run.", controls: ["C08", "C04"], sample: { maxRounds: 7, maxToolCalls: 10, tools: ["get_related_alerts", "check_process", "lookup_dns"] } },
+  { title: "Pull runbooks", caption: "Scoped RAG", why: "Retrieve tenant-approved guidance with versions. Runbooks advise. They do not authorize host isolation. Cite only IDs returned in this run.", controls: ["C05"], sample: { passages: ["K1 ransomware triage", "K2 file-server containment", "K3 vuln exposure notes"], approved: true } },
+  { title: "Draft brief", caption: "Cited structured output", why: "Schema-validate the analyst brief. Every finding cites real evidence IDs. Hypotheses stay labeled with alternatives and missing telemetry.", controls: ["C06", "C07"], sample: { assessment: "suspicious", confidence: "medium", findings: 3, hypotheses: 2, inventedIdsRejected: true } },
+  { title: "Human review", caption: "Draft before action", why: "Deliver a reviewable brief with action owners. No silent containment, ticket spam, or auto-memory writes. Optional notes stay untrusted context.", controls: ["C09", "C10"], sample: { deliverable: "analyst brief", autoContain: false, nextOwner: "Infrastructure" } },
+  { title: "Prove it", caption: "Evals & honesty", why: "Automate citation integrity, tool-correctness, and negative controls. Keep fixture playback labeled separately from production SIEM wiring.", controls: ["C12"], sample: { metrics: ["citation_integrity", "tool_correctness", "invented_id_negative"], gate: "L2" } }
+];
+
+const CHECK_ITEMS = [
+  { id: "c01", label: "C01 Strict schema validates ingress; unknown fields rejected", group: "Must-pass (L2)" },
+  { id: "c02", label: "C02 Tenant / time / entity scope enforced in code", group: "Must-pass (L2)" },
+  { id: "c03", label: "C03 Tool calls use authenticated caller identity", group: "Must-pass (L2)" },
+  { id: "c04", label: "C04 Tools are allowlisted; args and results schema-validated", group: "Must-pass (L2)" },
+  { id: "c06", label: "C06 Final output validates evidence / entity / citation IDs", group: "Must-pass (L2)" },
+  { id: "c08", label: "C08 Hard caps: turns, tools, wall time; cancel works", group: "Must-pass (L2)" },
+  { id: "c11", label: "C11 No secrets in repo, client storage, or exported traces", group: "Must-pass (L2)" },
+  { id: "c05", label: "C05 RAG filters approved + tenant corpora; cite this-run IDs only", group: "When present" },
+  { id: "c07", label: "C07 Schema separates findings, hypotheses, limitations", group: "When present" },
+  { id: "c09", label: "C09 Default deliverable is a draft/brief; no silent side effects", group: "When present" },
+  { id: "c10", label: "C10 Memory is explicit, tenant-scoped, capped, untrusted", group: "When present" },
+  { id: "c12", label: "C12 Automated checks cover citations, tools, and a negative control", group: "When present" },
+  { id: "label", label: "Fixtures or recorded playback are labeled as non-production", group: "Release honesty" },
+  { id: "limits", label: "Limitations of conclusions are visible to the reviewer", group: "Release honesty" },
+  { id: "writes", label: "Write-back / containment / spend paths are off unless enabled", group: "Release honesty" }
 ];
 
 const el = (tag, text, cls) => {
@@ -242,6 +287,145 @@ const el = (tag, text, cls) => {
   return n;
 };
 
+const storage = {
+  get(key, fallback) {
+    try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
+  },
+  set(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+  }
+};
+
+/* -------- view routing -------- */
+const VIEWS = ["example", "matrix", "checklist", "scorecard"];
+let activeView = "example";
+
+function showView(name, { push = true } = {}) {
+  if (!VIEWS.includes(name)) name = "example";
+  activeView = name;
+  if (name !== "example") pause();
+
+  document.querySelectorAll("[data-view-panel]").forEach((panel) => {
+    panel.hidden = panel.dataset.viewPanel !== name;
+  });
+  document.querySelectorAll("#nav [data-view]").forEach((btn) => {
+    if (btn.dataset.view === name) btn.setAttribute("aria-current", "page");
+    else btn.removeAttribute("aria-current");
+  });
+
+  const meta = META[name];
+  document.getElementById("eyebrow").textContent = meta.eyebrow;
+  document.getElementById("title").textContent = meta.title;
+  document.getElementById("subtitle").textContent = meta.subtitle;
+  document.getElementById("badge").textContent = meta.badge;
+  document.title = `${meta.title} · AI Standardization Matrix`;
+
+  if (push) {
+    const hash = name === "example" ? "#example" : `#${name}`;
+    if (location.hash !== hash) history.pushState({ view: name }, "", hash);
+  }
+  document.getElementById("main").focus({ preventScroll: true });
+}
+
+document.querySelectorAll("[data-view]").forEach((btn) => {
+  btn.addEventListener("click", () => showView(btn.dataset.view));
+});
+
+window.addEventListener("popstate", () => {
+  const name = (location.hash || "#example").slice(1);
+  showView(VIEWS.includes(name) ? name : "example", { push: false });
+});
+
+/* -------- matrix / checklist / scorecard -------- */
+function renderMatrix() {
+  const grid = document.getElementById("matrix-grid");
+  grid.replaceChildren();
+  CONTROLS.forEach((control) => {
+    const card = el("article", undefined, "matrix-card");
+    card.append(el("h3", `${control.id} · ${control.domain}`), el("p", control.rule, "rule"));
+    const levels = el("div", undefined, "level-grid");
+    ["L0", "L1", "L2", "L3"].forEach((level) => {
+      const cell = el("div", undefined, level === "L2" ? "level standard" : "level");
+      cell.append(el("strong", level), el("span", control.levels[level]));
+      levels.append(cell);
+    });
+    card.append(levels);
+    grid.append(card);
+  });
+}
+
+function renderChecklist() {
+  const root = document.getElementById("checklist");
+  const saved = storage.get("asm-checklist", {});
+  root.replaceChildren();
+  let lastGroup = "";
+  CHECK_ITEMS.forEach((item) => {
+    if (item.group !== lastGroup) {
+      lastGroup = item.group;
+      root.append(el("h3", item.group));
+    }
+    const row = el("label", undefined, "check-item");
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.checked = !!saved[item.id];
+    input.addEventListener("change", () => {
+      saved[item.id] = input.checked;
+      storage.set("asm-checklist", saved);
+    });
+    const text = el("div");
+    text.append(el("strong", item.label));
+    row.append(input, text);
+    root.append(row);
+  });
+}
+
+function levelRank(level) {
+  return { L0: 0, L1: 1, L2: 2, L3: 3 }[level] ?? 0;
+}
+
+function renderScorecard() {
+  const root = document.getElementById("scorecard");
+  const summary = document.getElementById("score-summary");
+  const saved = storage.get("asm-scorecard", {});
+  root.replaceChildren();
+
+  function refreshSummary() {
+    const failing = CONTROLS.filter((c) => c.gate && levelRank(saved[c.id] || "L0") < 2).map((c) => c.id);
+    summary.replaceChildren();
+    if (!failing.length) {
+      summary.append(el("strong", "Meets production Standard gate"), el("p", "All required controls are at L2 or higher."));
+    } else {
+      summary.append(
+        el("strong", "Blocked for production"),
+        el("p", `Below L2 on gate controls: ${failing.join(", ")}`)
+      );
+    }
+  }
+
+  CONTROLS.forEach((control) => {
+    const row = el("div", undefined, "score-item");
+    const body = el("div");
+    body.append(el("strong", `${control.id} · ${control.domain}`), el("p", control.rule, "doc-note"));
+    const select = document.createElement("select");
+    ["L0", "L1", "L2", "L3"].forEach((level) => {
+      const opt = el("option", `${level} · ${control.levels[level].slice(0, 48)}${control.levels[level].length > 48 ? "…" : ""}`);
+      opt.value = level;
+      select.append(opt);
+    });
+    select.value = saved[control.id] || "L0";
+    select.addEventListener("change", () => {
+      saved[control.id] = select.value;
+      storage.set("asm-scorecard", saved);
+      refreshSummary();
+    });
+    body.append(select);
+    row.append(el("span", control.gate ? "GATE" : "OPT", "chip"), body);
+    root.append(row);
+  });
+  refreshSummary();
+}
+
+/* -------- SIEM example simulation -------- */
 let current = -1;
 let playing = false;
 let timer = null;
@@ -259,17 +443,9 @@ const pace = document.getElementById("pace");
 STAGES.forEach((stage, i) => {
   const b = el("button", undefined, "security-stage");
   b.type = "button";
-  b.append(
-    el("span", String(i + 1).padStart(2, "0"), "security-stage-number"),
-    el("strong", stage.title),
-    el("span", stage.caption)
-  );
+  b.append(el("span", String(i + 1).padStart(2, "0"), "security-stage-number"), el("strong", stage.title), el("span", stage.caption));
   b.setAttribute("aria-label", `Open ${stage.title}`);
-  b.addEventListener("click", () => {
-    pause();
-    current = i;
-    draw();
-  });
+  b.addEventListener("click", () => { pause(); current = i; draw(); });
   track.append(b);
 });
 
@@ -281,13 +457,7 @@ function pause() {
 }
 
 function updateControls() {
-  playBtn.textContent = playing
-    ? "Pause"
-    : current < 0
-      ? "Simulate critical alert"
-      : current === STAGES.length - 1
-        ? "Replay investigation"
-        : "Continue investigation";
+  playBtn.textContent = playing ? "Pause" : current < 0 ? "Simulate critical alert" : current === STAGES.length - 1 ? "Replay investigation" : "Continue investigation";
   playBtn.setAttribute("aria-pressed", String(playing));
   nextBtn.disabled = current === STAGES.length - 1;
   resetBtn.disabled = current < 0;
@@ -351,46 +521,42 @@ function draw() {
 
   const stage = STAGES[current];
   output.append(el("h3", stage.title), el("p", stage.why));
-
   const chips = el("div", undefined, "control-chips");
   stage.controls.forEach((id) => chips.append(el("span", id, "chip")));
   output.append(chips);
-
   stage.controls.forEach((id) => {
     const card = el("div", undefined, "control-card");
-    card.append(el("strong", `${id} · ${CONTROLS[id][0]}`), el("span", CONTROLS[id][1]));
+    card.append(el("strong", `${id} · ${CONTROL_MAP[id][0]}`), el("span", CONTROL_MAP[id][1]));
     output.append(card);
   });
-
   output.append(el("pre", JSON.stringify(stage.sample, null, 2), "security-json"));
 
   if (current === STAGES.length - 1) {
     const links = el("div", undefined, "links-row");
-    const matrix = el("a", "Open full matrix");
-    matrix.href = "https://github.com/NotoriousPOG/ai-standardization-matrix/blob/main/MATRIX.md";
-    matrix.className = "primary";
-    const checklist = el("a", "Build checklist");
-    checklist.href = "https://github.com/NotoriousPOG/ai-standardization-matrix/blob/main/CHECKLIST.md";
-    links.append(matrix, checklist);
+    const toMatrix = el("button", "Open full matrix", "primary");
+    toMatrix.type = "button";
+    toMatrix.addEventListener("click", () => showView("matrix"));
+    const toCheck = el("button", "Build checklist", "subtle");
+    toCheck.type = "button";
+    toCheck.addEventListener("click", () => showView("checklist"));
+    links.append(toMatrix, toCheck);
     output.append(links);
   }
 }
 
 playBtn.addEventListener("click", () => (playing ? pause() : start()));
-nextBtn.addEventListener("click", () => {
-  pause();
-  advance();
-});
-resetBtn.addEventListener("click", () => {
-  pause();
-  current = -1;
-  draw();
-});
-pace.addEventListener("change", () => {
-  if (playing) schedule();
-});
+nextBtn.addEventListener("click", () => { pause(); advance(); });
+resetBtn.addEventListener("click", () => { pause(); current = -1; draw(); });
+pace.addEventListener("change", () => { if (playing) schedule(); });
 
+renderMatrix();
+renderChecklist();
+renderScorecard();
 draw();
+
+const initial = (location.hash || "#example").slice(1);
+showView(VIEWS.includes(initial) ? initial : "example", { push: false });
+if (!location.hash) history.replaceState({ view: "example" }, "", "#example");
 </script>
 </body>
 </html>
