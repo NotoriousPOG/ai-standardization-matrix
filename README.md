@@ -12,39 +12,33 @@ Walk a SIEM alert-response path and see which controls apply at each hop:
 
 ## Example: SIEM alert → AI-assisted response
 
-The matrix is stack-agnostic. As an example, here is how the controls show up when AI automation helps a SOC respond to a SIEM alert — triage, related-event review, runbook guidance, and a cited analyst brief.
+The matrix is the build standard. The interactive example is the same SIEM investigation walkthrough used in the architecture lab: a critical detection-queue alert moves through Zod validation, Wazuh MCP, scoped RAG, evidence tools, intelligence, a cited assessment, and analyst review.
 
 **Rule of the example:** the AI gathers and drafts. It does not auto-contain the host. A person decides.
 
 ```mermaid
 flowchart LR
-  A[SIEM critical alert] --> B[C01 Validate envelope]
-  B --> C[C02 Scope tenant/host/window]
-  C --> D[C03 Analyst session auth]
-  D --> E[C08 Bounded investigation loop]
-  E <--> F[C04 MCP/tools: related events]
-  E <--> G[C05 RAG: approved runbooks]
-  E --> H[C06 + C07 Cited analyst brief]
-  H --> I[C09 Human review / own actions]
-  I --> J[Optional C10 Analyst notes]
-  K[C11 Secrets] -.-> B
-  K -.-> E
-  L[C12 Evals] -.-> H
-  L -.-> F
+  A[Critical alert] --> B[Validate and queue]
+  B --> C[Review related alerts]
+  C --> D[Retrieve runbooks]
+  D --> E[Inspect evidence]
+  E --> F[Cross-reference intel]
+  F --> G[Build assessment]
+  G --> H[Analyst review]
 ```
 
-| Stage | What happens in the SIEM example | Controls |
+| Stage | What happens | Matrix controls |
 | --- | --- | --- |
-| Admit the alert | SIEM/webhook payload hits the edge; strict schema rejects junk before any model call | C01, C11 |
-| Lock scope | Bind to tenant, host, and time window; drop cross-tenant or out-of-window events | C02 |
-| Bind the analyst | Tool calls inherit the authenticated SOC session — the model cannot invent authority | C03 |
-| Investigate in a budget | Model ↔ allowlisted tools (related alerts, process/DNS lookups) with turn/tool/time caps | C08, C04 |
-| Pull runbooks | Tenant-approved RAG returns versioned guidance; guidance is not permission to isolate | C05 |
-| Draft the brief | Structured findings cite real evidence IDs; hypotheses stay labeled with gaps | C06, C07 |
-| Analyst decides | Draft review; owners for next steps; no silent containment | C09, C10 |
-| Prove the path | Evals fail invented evidence IDs and broken tool contracts; fixture paths stay labeled | C12 |
+| Critical alert | Detection-queue arrival for FILESVR-01 ransom note | C01, C11 |
+| Validate & queue | Zod envelope + durable investigation job | C01, C02 |
+| Review related alerts | Scoped Wazuh MCP tool calls | C03, C04, C08 |
+| Retrieve runbooks | Approved tenant RAG with versioned citations | C05 |
+| Inspect evidence | osquery / YARA / inventory / DNS / proxy checks | C04, C06 |
+| Cross-reference intelligence | MISP + source lookups + OSV exposure | C04, C06, C07 |
+| Build assessment | Cited brief with facts, hypotheses, owners | C06, C07, C08 |
+| Analyst review | Inbox handoff; review ≠ containment | C09, C10, C12 |
 
-Same control order applies to CRM agents, cost bots, or MCP ops assistants — SIEM is just one concrete shape.
+Same control bar applies to CRM agents, cost bots, or MCP ops assistants. SIEM is the concrete incident-shaped example.
 
 ## Quick start
 

@@ -1,0 +1,125 @@
+{
+  "incidentId": "INC-NW-2041",
+  "seed": {
+    "composite_id": "evt-ransom-1",
+    "cid": "northwind",
+    "display_name": "Ransomware note dropped",
+    "severity_name": "Critical",
+    "timestamp": "2026-09-01T16:40:00Z",
+    "filename": "HOW_TO_DECRYPT.txt",
+    "filepath": "C:\\Shares\\Finance\\HOW_TO_DECRYPT.txt",
+    "device": {
+      "hostname": "FILESVR-01",
+      "local_ip": "10.20.8.12",
+      "os_version": "Windows Server 2022"
+    }
+  },
+  "captions": [
+    "Queue arrival",
+    "Zod + durable job",
+    "Wazuh MCP",
+    "Scoped RAG",
+    "osquery + YARA",
+    "MISP + sources + OSV",
+    "Cited AI analysis",
+    "Human decision"
+  ],
+  "controlsByStage": [
+    ["C01", "C11"],
+    ["C01", "C02"],
+    ["C03", "C04", "C08"],
+    ["C05"],
+    ["C04", "C06"],
+    ["C04", "C06", "C07"],
+    ["C06", "C07", "C08"],
+    ["C09", "C10", "C12"]
+  ],
+  "evidence": [
+    {"id": "E1", "source": "Detection queue", "summary": "HOW_TO_DECRYPT.txt written to the Finance share."},
+    {"id": "E2", "source": "Wazuh FIM", "summary": "184 file modifications in the Finance share during 60 seconds."},
+    {"id": "E3", "source": "Wazuh event search", "summary": "A process event records a shadow-copy deletion command."},
+    {"id": "E4", "source": "osquery snapshot", "summary": "The current process snapshot no longer contains the process from E3."},
+    {"id": "E5", "source": "YARA artifact check", "summary": "A note-text heuristic matches the captured ransom-note sample."},
+    {"id": "E6", "source": "Asset and package inventory", "summary": "Finance reporting uses Jinja2 3.1.4 on FILESVR-01 and FILESVR-02."},
+    {"id": "E7", "source": "Wazuh DNS event", "summary": "PowerShell PID 4120 queried recovery-help.example."},
+    {"id": "E8", "source": "Web proxy", "summary": "The transparent proxy blocked a GET to the note URL; no process identifier."},
+    {"id": "E9", "source": "Endpoint file metadata", "summary": "File metadata records recovery.dll and its SHA-256 for intelligence lookup."}
+  ],
+  "knowledge": [
+    {"id": "K1", "title": "Ransomware triage", "version": 3, "text": "Preserve the note, file samples, process history and authentication records. Verify modification content and backup integrity. Escalate active destructive behavior for containment approval."},
+    {"id": "K2", "title": "File service containment", "version": 2, "text": "Coordinate with the service owner before isolating a file server. Identify connected clients, account scope, backup isolation and business impact."},
+    {"id": "K3", "title": "Vulnerability triage", "version": 4, "text": "Match ecosystem, package and installed version. Validate reachability and exploit prerequisites. A matching advisory does not identify the cause of an incident."}
+  ],
+  "stages": [
+    {
+      "title": "Critical alert",
+      "why": "The detection queue supplies a critical host alert. An arrival event starts the automation.",
+      "output": "One scoped alert, ready for admission checks."
+    },
+    {
+      "title": "Validate & queue",
+      "why": "Application code validates scope and rejects duplicate deliveries before starting an investigation.",
+      "output": "INC-NW-2041 · one investigation job"
+    },
+    {
+      "title": "Review related alerts",
+      "why": "The AI asks for context; a scoped MCP adapter reads related events from Wazuh.",
+      "output": "Note write, file modifications and shadow-copy command"
+    },
+    {
+      "title": "Retrieve runbooks",
+      "why": "RAG supplies response guidance and operational constraints, with versioned citations.",
+      "output": "K1–K3 · triage, containment and vulnerability guidance"
+    },
+    {
+      "title": "Inspect evidence",
+      "why": "The model chooses focused checks; tool adapters return bounded evidence and explicit limitations.",
+      "output": "E3–E9 · process ancestry, artifact, inventory and network context"
+    },
+    {
+      "title": "Cross-reference intelligence",
+      "why": "Query MISP, inspect source reports, and check package exposure without inventing an exploit chain.",
+      "output": "Intelligence reports + OSV advisory matches · exposure is not exploitation"
+    },
+    {
+      "title": "Build assessment",
+      "why": "The AI combines evidence, guidance and tool limits into a decision the analyst can review.",
+      "output": "Prioritized assessment with evidence and action owners"
+    },
+    {
+      "title": "Analyst review",
+      "why": "The automation creates a reviewable handoff, then waits for the analyst’s decision.",
+      "output": "Analyst inbox → reviewed case"
+    }
+  ],
+  "assessment": {
+    "title": "Suspected ransomware activity on FILESVR-01",
+    "priority": "Critical",
+    "confidence": "High triage urgency · Moderate confidence in ransomware hypothesis",
+    "summary": "A Qilin-labelled DLL hash match, a ransom-note write, a burst of Finance-share file modifications, and a shadow-copy deletion command warrant urgent incident response. The supplied records do not yet prove encryption, successful backup deletion, or activity on a second server.",
+    "findings": [
+      {"title": "Possible destructive activity", "text": "The note and modification burst coincide on FILESVR-01. Inspect before/after file samples to distinguish encryption from legitimate bulk changes.", "refs": ["E1", "E2", "E3", "K1"]},
+      {"title": "Execution history needs preservation", "text": "An empty process snapshot does not clear earlier execution. Preserve script, logon-session mapping and command outcome.", "refs": ["E3", "E4", "E5", "E7", "E8", "K1"]},
+      {"title": "Known file hash raises triage priority", "text": "The collected DLL hash matches a Qilin-labelled public record; prioritize file provenance and loader telemetry. Execution remains unverified.", "refs": ["E5", "E9", "K1"]},
+      {"title": "Separate vulnerability exposure", "text": "Jinja2 3.1.4 matches public advisories on both reporting servers. Nothing in this evidence links template rendering to the file modifications.", "refs": ["E6", "K3"]}
+    ],
+    "actions": [
+      {"owner": "Incident commander + Infrastructure", "action": "Confirm whether writes are still occurring. If destructive activity continues, approve containment after assessing dependents.", "refs": ["E1", "E2", "K1", "K2"]},
+      {"owner": "Endpoint analyst", "action": "Preserve the note and representative modified files; collect process ancestry and security logs for 16:30–16:50 UTC.", "refs": ["E1", "E2", "E3", "K1"]},
+      {"owner": "Malware analyst", "action": "Preserve recovery.dll and verify hash provenance before attributing changes to Qilin.", "refs": ["E9", "E3", "K1"]},
+      {"owner": "Backup administrator", "action": "Verify offline or immutable recovery points. The shadow-copy command alone does not establish deletion success.", "refs": ["E3", "K1"]}
+    ],
+    "notExecuted": ["Host isolation", "Account disabling", "File deletion", "Package upgrades"],
+    "limitations": [
+      "File-content comparison, command exit status, and process attribution for the blocked request remain missing.",
+      "A prior exercise used the note template; current exercise approval remains unverified.",
+      "This Pages walkthrough uses authored fixtures. No live SIEM, model, or containment runs here."
+    ]
+  },
+  "intel": [
+    {"name": "MISP", "summary": "Prior exercise note match + one imported community report."},
+    {"name": "MalwareBazaar", "summary": "Exact file-hash match · Qilin-labelled DLL. Execution remains unverified."},
+    {"name": "ThreatFox", "summary": "No infrastructure match in this response. No clean verdict follows."},
+    {"name": "OSV", "summary": "Jinja2 3.1.4 · three advisories on FILESVR-01 and FILESVR-02. Exposure, not incident cause."}
+  ]
+}

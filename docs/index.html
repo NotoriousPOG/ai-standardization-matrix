@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
   <title>AI Standardization Matrix</title>
-  <meta name="description" content="Build standard for AI automation. Example: SIEM alert response with schema, scope, tools, runbooks, cited briefs, and human review.">
+  <meta name="description" content="Build standard for AI automation, with a SIEM alert investigation example matching the architecture-lab walkthrough.">
   <style>
 :root{color-scheme:dark;--bg:#10121c;--panel:#181b29;--panel2:#222538;--line:#41465f;--muted:#bbbfd2;--text:#f3f2f8;--accent:#a68acb;--warn:#ffc681;--error:#ffacb0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px}
 *{box-sizing:border-box}
@@ -35,7 +35,7 @@ h1{font-size:clamp(28px,2.7vw,40px);line-height:1.2;letter-spacing:-1px;font-wei
 h2{font-size:22px;line-height:1.3;margin:0 0 16px}
 h3{font-size:20px;margin:0 0 12px}
 p{margin:12px 0}
-.subtitle{color:var(--muted);max-width:750px;margin:0}
+.subtitle{color:var(--muted);max-width:780px;margin:0}
 .primary{background:var(--accent);border-color:var(--accent);color:#17121f}
 .primary:hover{background:#c6afe6;border-color:#c6afe6}
 .subtle{background:transparent;font-size:14px}
@@ -63,15 +63,29 @@ select{background:#161a29;color:var(--text);border:1px solid #61698a;border-radi
 .security-alert strong,.security-alert>span:not(.security-severity),.security-alert small{display:block;margin-top:10px;line-height:1.55}
 .security-alert small{color:var(--muted);font-size:14px}
 .security-severity{color:#ffb6bf;font-size:14px;font-weight:600}
-.control-chips{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 8px}
+.security-inbox{border-top:1px solid var(--line);margin-top:28px;padding-top:24px}
+.security-notification{padding:18px;text-align:left;width:100%;white-space:normal;background:#30283f;border-color:var(--accent);font-weight:400}
+.security-notification>*{display:block;line-height:1.5;margin-bottom:6px}
+.security-notification>span:last-child{color:#d6c0ef;margin-bottom:0}
+.security-result{display:block;width:100%;text-align:left;padding:14px 0;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;font-weight:400;white-space:normal}
+.security-result strong{display:block;font-size:16px;color:#c3b0df}
+.security-result span,.security-result p{display:block;font-size:16px;margin:8px 0 0;line-height:1.55;color:var(--text)}
+button.security-result:hover{background:var(--panel2)}
+.control-chips{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
 .chip{border:1px solid #695880;background:#30283f;border-radius:20px;padding:5px 12px;color:#ddc9f5;font-size:12px;font-family:ui-monospace,monospace}
-.control-card{border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:10px 0;background:var(--bg)}
-.control-card strong{display:block;font-size:15px;color:#c3b0df}
-.control-card span{display:block;margin-top:8px;color:var(--muted);font-size:14px;line-height:1.5}
-.security-json{font-size:15px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;max-height:300px;overflow:auto;background:var(--bg);padding:18px;border-radius:8px;border:1px solid var(--line);margin:14px 0 0;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.security-json{font-size:15px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;max-height:280px;overflow:auto;background:var(--bg);padding:18px;border-radius:8px;border:1px solid var(--line);margin:14px 0 0;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.security-brief{margin-top:28px;padding:28px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.security-brief[hidden]{display:none}
+.evidence-card{border-left:3px solid #89a3d0;padding:16px 18px;margin:14px 0;background:var(--panel);border-radius:0 8px 8px 0}
+.evidence-card strong{display:block;font-size:16px}
+.evidence-card p{margin:8px 0 0;color:var(--muted);font-size:15px}
+.action-card{border:1px solid var(--line);border-radius:8px;padding:16px;margin:12px 0;background:var(--panel)}
+.action-card strong{display:block}
+.action-card p{margin:8px 0 0;font-size:15px;color:var(--muted)}
+.action-priority{display:inline-block;border-radius:4px;background:#30283f;color:#ddc9f5;font-size:12px;padding:3px 8px;margin-bottom:10px;border:1px solid #695880}
 .links-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
 .matrix-grid{display:grid;gap:14px}
-.matrix-card{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:20px;overflow:hidden}
+.matrix-card{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:20px}
 .matrix-card h3{margin:0 0 8px;font-size:18px}
 .matrix-card .rule{color:var(--muted);margin:0 0 16px;font-size:15px}
 .level-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
@@ -105,7 +119,7 @@ footer{display:flex;justify-content:space-between;gap:16px;margin-top:40px;paddi
   .security-track{gap:16px}
   .security-stage{padding:14px 10px}
   .security-stage strong{font-size:16px}
-  .security-pane{padding:18px}
+  .security-pane,.security-brief{padding:18px}
   .level-grid{grid-template-columns:1fr}
   footer{display:block}
 }
@@ -162,12 +176,17 @@ footer{display:flex;justify-content:space-between;gap:16px;margin-top:40px;paddi
           <section class="security-pane">
             <h2>Detection queue</h2>
             <div id="queue"></div>
+            <div class="security-inbox">
+              <h3>Analyst inbox</h3>
+              <div id="notification"></div>
+            </div>
           </section>
           <section class="security-pane">
             <h2>Investigation</h2>
             <div id="output"></div>
           </section>
         </div>
+        <section class="security-brief" id="brief" hidden></section>
       </div>
     </section>
 
@@ -197,10 +216,10 @@ footer{display:flex;justify-content:space-between;gap:16px;margin-top:40px;paddi
 <script>
 const META = {
   example: {
-    eyebrow: "BUILD STANDARD",
-    title: "How to build AI automation",
-    subtitle: "Use this matrix when you design agents, RAG loops, and tool orchestration. The walkthrough below is one example: a SIEM critical alert moving through validation, scoped investigation, cited drafting, and human review.",
-    badge: "Example path"
+    eyebrow: "EXAMPLE · SIEM AUTOMATION",
+    title: "Critical alert to analyst brief",
+    subtitle: "Same SIEM investigation path as the architecture lab: queue arrival, Zod validation, Wazuh MCP, scoped RAG, evidence tools, intelligence, cited assessment, then human review. The matrix tabs are the build standard behind each hop.",
+    badge: "Authored fixtures"
   },
   matrix: {
     eyebrow: "CONTROLS",
@@ -249,19 +268,6 @@ const CONTROLS = [
     levels: { L0: "Manual eyeballing only", L1: "A few golden transcripts", L2: "Automated citation, tool-correctness, and negative controls", L3: "Calibrated judge metrics; stale-report detection; fixture vs production paths labeled" }, gate: false }
 ];
 
-const CONTROL_MAP = Object.fromEntries(CONTROLS.map((c) => [c.id, [c.domain, c.rule]]));
-
-const STAGES = [
-  { title: "Validate alert", caption: "Schema at the edge", why: "A SIEM/webhook payload is still untrusted JSON. Parse tenant, host, severity, and time before any model call. Bad shape dies here.", controls: ["C01", "C11"], sample: { tenant: "northwind", id: "evt-ransom-1", host: "FILESVR-01", severity: "critical", time: "2026-09-01T16:40:00Z" } },
-  { title: "Lock scope", caption: "Tenant / host / window", why: "Bind the investigation to one tenant, one host, and a tight time window. Out-of-scope events are dropped in code, not by hoping the prompt remembers.", controls: ["C02"], sample: { tenant: "northwind", host: "FILESVR-01", window: ["2026-09-01T16:30:00Z", "2026-09-01T16:50:00Z"], incidentId: "INC-NW-2041" } },
-  { title: "Bind analyst", caption: "Session auth on tools", why: "Later MCP or SIEM tool calls inherit the authenticated SOC session. The model can propose tools. It cannot invent who is allowed to run them.", controls: ["C03"], sample: { caller: "soc-oncall", tokenTTL: "15m", permissions: ["read:alerts", "read:assets", "read:runbooks"] } },
-  { title: "Investigate", caption: "Bounded tool loop", why: "Allowlisted tools only (related alerts, process/DNS checks). Cap turns, tool calls, and wall time. Identical repeated lookups stop the run.", controls: ["C08", "C04"], sample: { maxRounds: 7, maxToolCalls: 10, tools: ["get_related_alerts", "check_process", "lookup_dns"] } },
-  { title: "Pull runbooks", caption: "Scoped RAG", why: "Retrieve tenant-approved guidance with versions. Runbooks advise. They do not authorize host isolation. Cite only IDs returned in this run.", controls: ["C05"], sample: { passages: ["K1 ransomware triage", "K2 file-server containment", "K3 vuln exposure notes"], approved: true } },
-  { title: "Draft brief", caption: "Cited structured output", why: "Schema-validate the analyst brief. Every finding cites real evidence IDs. Hypotheses stay labeled with alternatives and missing telemetry.", controls: ["C06", "C07"], sample: { assessment: "suspicious", confidence: "medium", findings: 3, hypotheses: 2, inventedIdsRejected: true } },
-  { title: "Human review", caption: "Draft before action", why: "Deliver a reviewable brief with action owners. No silent containment, ticket spam, or auto-memory writes. Optional notes stay untrusted context.", controls: ["C09", "C10"], sample: { deliverable: "analyst brief", autoContain: false, nextOwner: "Infrastructure" } },
-  { title: "Prove it", caption: "Evals & honesty", why: "Automate citation integrity, tool-correctness, and negative controls. Keep fixture playback labeled separately from production SIEM wiring.", controls: ["C12"], sample: { metrics: ["citation_integrity", "tool_correctness", "invented_id_negative"], gate: "L2" } }
-];
-
 const CHECK_ITEMS = [
   { id: "c01", label: "C01 Strict schema validates ingress; unknown fields rejected", group: "Must-pass (L2)" },
   { id: "c02", label: "C02 Tenant / time / entity scope enforced in code", group: "Must-pass (L2)" },
@@ -296,15 +302,29 @@ const storage = {
   }
 };
 
-/* -------- view routing -------- */
 const VIEWS = ["example", "matrix", "checklist", "scorecard"];
-let activeView = "example";
+let fixture = null;
+let current = -1;
+let playing = false;
+let reviewed = false;
+let reportOpen = false;
+let timer = null;
+
+const root = document.getElementById("sim");
+const track = document.getElementById("track");
+const status = document.getElementById("status");
+const queue = document.getElementById("queue");
+const notification = document.getElementById("notification");
+const output = document.getElementById("output");
+const brief = document.getElementById("brief");
+const playBtn = document.getElementById("play");
+const nextBtn = document.getElementById("next");
+const resetBtn = document.getElementById("reset");
+const pace = document.getElementById("pace");
 
 function showView(name, { push = true } = {}) {
   if (!VIEWS.includes(name)) name = "example";
-  activeView = name;
   if (name !== "example") pause();
-
   document.querySelectorAll("[data-view-panel]").forEach((panel) => {
     panel.hidden = panel.dataset.viewPanel !== name;
   });
@@ -312,16 +332,14 @@ function showView(name, { push = true } = {}) {
     if (btn.dataset.view === name) btn.setAttribute("aria-current", "page");
     else btn.removeAttribute("aria-current");
   });
-
   const meta = META[name];
   document.getElementById("eyebrow").textContent = meta.eyebrow;
   document.getElementById("title").textContent = meta.title;
   document.getElementById("subtitle").textContent = meta.subtitle;
   document.getElementById("badge").textContent = meta.badge;
   document.title = `${meta.title} · AI Standardization Matrix`;
-
   if (push) {
-    const hash = name === "example" ? "#example" : `#${name}`;
+    const hash = `#${name}`;
     if (location.hash !== hash) history.pushState({ view: name }, "", hash);
   }
   document.getElementById("main").focus({ preventScroll: true });
@@ -330,13 +348,11 @@ function showView(name, { push = true } = {}) {
 document.querySelectorAll("[data-view]").forEach((btn) => {
   btn.addEventListener("click", () => showView(btn.dataset.view));
 });
-
 window.addEventListener("popstate", () => {
   const name = (location.hash || "#example").slice(1);
   showView(VIEWS.includes(name) ? name : "example", { push: false });
 });
 
-/* -------- matrix / checklist / scorecard -------- */
 function renderMatrix() {
   const grid = document.getElementById("matrix-grid");
   grid.replaceChildren();
@@ -355,14 +371,14 @@ function renderMatrix() {
 }
 
 function renderChecklist() {
-  const root = document.getElementById("checklist");
+  const list = document.getElementById("checklist");
   const saved = storage.get("asm-checklist", {});
-  root.replaceChildren();
+  list.replaceChildren();
   let lastGroup = "";
   CHECK_ITEMS.forEach((item) => {
     if (item.group !== lastGroup) {
       lastGroup = item.group;
-      root.append(el("h3", item.group));
+      list.append(el("h3", item.group));
     }
     const row = el("label", undefined, "check-item");
     const input = document.createElement("input");
@@ -375,7 +391,7 @@ function renderChecklist() {
     const text = el("div");
     text.append(el("strong", item.label));
     row.append(input, text);
-    root.append(row);
+    list.append(row);
   });
 }
 
@@ -384,24 +400,16 @@ function levelRank(level) {
 }
 
 function renderScorecard() {
-  const root = document.getElementById("scorecard");
+  const list = document.getElementById("scorecard");
   const summary = document.getElementById("score-summary");
   const saved = storage.get("asm-scorecard", {});
-  root.replaceChildren();
-
+  list.replaceChildren();
   function refreshSummary() {
     const failing = CONTROLS.filter((c) => c.gate && levelRank(saved[c.id] || "L0") < 2).map((c) => c.id);
     summary.replaceChildren();
-    if (!failing.length) {
-      summary.append(el("strong", "Meets production Standard gate"), el("p", "All required controls are at L2 or higher."));
-    } else {
-      summary.append(
-        el("strong", "Blocked for production"),
-        el("p", `Below L2 on gate controls: ${failing.join(", ")}`)
-      );
-    }
+    if (!failing.length) summary.append(el("strong", "Meets production Standard gate"), el("p", "All required controls are at L2 or higher."));
+    else summary.append(el("strong", "Blocked for production"), el("p", `Below L2 on gate controls: ${failing.join(", ")}`));
   }
-
   CONTROLS.forEach((control) => {
     const row = el("div", undefined, "score-item");
     const body = el("div");
@@ -420,34 +428,37 @@ function renderScorecard() {
     });
     body.append(select);
     row.append(el("span", control.gate ? "GATE" : "OPT", "chip"), body);
-    root.append(row);
+    list.append(row);
   });
   refreshSummary();
 }
 
-/* -------- SIEM example simulation -------- */
-let current = -1;
-let playing = false;
-let timer = null;
-
-const root = document.getElementById("sim");
-const track = document.getElementById("track");
-const status = document.getElementById("status");
-const queue = document.getElementById("queue");
-const output = document.getElementById("output");
-const playBtn = document.getElementById("play");
-const nextBtn = document.getElementById("next");
-const resetBtn = document.getElementById("reset");
-const pace = document.getElementById("pace");
-
-STAGES.forEach((stage, i) => {
-  const b = el("button", undefined, "security-stage");
+function recordRow(record) {
+  const b = el("button", undefined, "security-result");
   b.type = "button";
-  b.append(el("span", String(i + 1).padStart(2, "0"), "security-stage-number"), el("strong", stage.title), el("span", stage.caption));
-  b.setAttribute("aria-label", `Open ${stage.title}`);
-  b.addEventListener("click", () => { pause(); current = i; draw(); });
-  track.append(b);
-});
+  b.append(el("strong", `${record.id} · ${record.source || record.title}`), el("span", record.summary || record.text));
+  return b;
+}
+
+function buildTrack() {
+  track.replaceChildren();
+  fixture.stages.forEach((stage, i) => {
+    const b = el("button", undefined, "security-stage");
+    b.type = "button";
+    b.append(
+      el("span", String(i + 1).padStart(2, "0"), "security-stage-number"),
+      el("strong", stage.title),
+      el("span", fixture.captions[i])
+    );
+    b.setAttribute("aria-label", `Explore ${stage.title}`);
+    b.addEventListener("click", () => {
+      pause();
+      current = i;
+      draw();
+    });
+    track.append(b);
+  });
+}
 
 function pause() {
   clearTimeout(timer);
@@ -457,9 +468,16 @@ function pause() {
 }
 
 function updateControls() {
-  playBtn.textContent = playing ? "Pause" : current < 0 ? "Simulate critical alert" : current === STAGES.length - 1 ? "Replay investigation" : "Continue investigation";
+  if (!fixture) return;
+  playBtn.textContent = playing
+    ? "Pause"
+    : current < 0
+      ? "Simulate critical alert"
+      : current === fixture.stages.length - 1
+        ? "Replay investigation"
+        : "Continue investigation";
   playBtn.setAttribute("aria-pressed", String(playing));
-  nextBtn.disabled = current === STAGES.length - 1;
+  nextBtn.disabled = current === fixture.stages.length - 1;
   resetBtn.disabled = current < 0;
 }
 
@@ -468,13 +486,17 @@ function schedule() {
   timer = setTimeout(() => {
     if (!playing) return;
     advance();
-    if (current < STAGES.length - 1) schedule();
+    if (current < fixture.stages.length - 1) schedule();
     else pause();
   }, Number(pace.value));
 }
 
 function start() {
-  if (current === STAGES.length - 1) current = -1;
+  if (current === fixture.stages.length - 1) {
+    current = -1;
+    reviewed = false;
+    reportOpen = false;
+  }
   playing = true;
   root.classList.add("security-playing");
   if (current < 0) advance();
@@ -483,11 +505,62 @@ function start() {
 }
 
 function advance() {
-  if (current < STAGES.length - 1) current += 1;
+  if (current < fixture.stages.length - 1) current += 1;
   draw();
 }
 
+function openBrief() {
+  reportOpen = true;
+  renderBrief();
+  brief.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" });
+}
+
+function renderBrief() {
+  brief.hidden = !reportOpen || current < 7;
+  if (brief.hidden) {
+    brief.replaceChildren();
+    return;
+  }
+  const a = fixture.assessment;
+  brief.replaceChildren();
+  const heading = el("div");
+  heading.append(el("p", "ANALYST BRIEF", "eyebrow"), el("h2", a.title));
+  brief.append(heading);
+  brief.append(el("p", a.summary));
+  brief.append(el("p", `${a.priority} · ${a.confidence}`));
+  brief.append(el("h3", "Findings"));
+  a.findings.forEach((f) => {
+    const card = el("div", undefined, "evidence-card");
+    card.append(el("strong", f.title), el("p", f.text), el("p", `Refs: ${f.refs.join(", ")}`));
+    brief.append(card);
+  });
+  brief.append(el("h3", "Next steps"));
+  a.actions.forEach((action, i) => {
+    const card = el("div", undefined, "action-card");
+    card.append(el("span", i < 2 ? "Now" : "Next", "action-priority"), el("strong", action.action), el("p", `Owner: ${action.owner}`), el("p", `Refs: ${action.refs.join(", ")}`));
+    brief.append(card);
+  });
+  brief.append(el("h3", "Not executed"));
+  brief.append(el("p", a.notExecuted.join(" · ")));
+  brief.append(el("h3", "Limitations"));
+  a.limitations.forEach((line) => brief.append(el("p", line)));
+  const review = el("button", reviewed ? "Review recorded" : "Mark reviewed", reviewed ? "subtle" : "primary");
+  review.type = "button";
+  review.disabled = reviewed;
+  review.addEventListener("click", () => {
+    reviewed = true;
+    draw();
+  });
+  const links = el("div", undefined, "links-row");
+  const toMatrix = el("button", "See matrix controls", "subtle");
+  toMatrix.type = "button";
+  toMatrix.addEventListener("click", () => showView("matrix"));
+  links.append(review, toMatrix);
+  brief.append(links);
+}
+
 function draw() {
+  if (!fixture) return;
   updateControls();
   [...track.children].forEach((b, i) => {
     b.classList.toggle("active", i === current);
@@ -497,66 +570,131 @@ function draw() {
   });
 
   status.hidden = current < 0;
-  status.textContent = current < 0 ? "" : `${current + 1} / ${STAGES.length} · ${STAGES[current].title}`;
+  status.textContent = current < 0 ? "" : `${current + 1} / 8 · ${fixture.stages[current].title}`;
 
   queue.replaceChildren();
   if (current < 0) {
     queue.append(el("p", "No critical alerts awaiting investigation.", "security-empty"));
   } else {
-    const alert = el("div", undefined, "security-alert");
+    const alert = el("button", undefined, "security-alert");
+    alert.type = "button";
     alert.append(
       el("span", "Critical", "security-severity"),
-      el("strong", "Ransomware note dropped on FILESVR-01"),
+      el("strong", fixture.seed.display_name),
       el("span", "FILESVR-01 · Finance file service"),
-      el("small", current === STAGES.length - 1 ? "evt-ransom-1 · Awaiting analyst review" : "evt-ransom-1 · Investigating")
+      el("small", `evt-ransom-1 · 16:40 UTC · ${current === 7 ? (reviewed ? "Reviewed" : "Awaiting review") : "Investigating"}`)
     );
     queue.append(alert);
   }
 
+  notification.replaceChildren();
+  if (current < 7) {
+    notification.append(el("p", "No pending reviews.", "security-empty"));
+  } else {
+    const note = el("button", undefined, "security-notification");
+    note.type = "button";
+    note.append(
+      el("strong", reviewed ? "Review recorded" : "Critical incident ready for review"),
+      el("span", `${fixture.incidentId} · FILESVR-01`),
+      el("span", reviewed ? "Open analyst brief →" : "Review findings & next steps →")
+    );
+    note.addEventListener("click", openBrief);
+    notification.append(note);
+  }
+
   output.replaceChildren();
   if (current < 0) {
-    output.append(el("p", "Simulate an alert to follow AI automation from queue intake to analyst review, with the matrix controls required at each hop.", "security-empty"));
+    output.append(el("p", "Simulate an alert to follow the investigation from queue intake to analyst review.", "security-empty"));
+    renderBrief();
     return;
   }
 
-  const stage = STAGES[current];
-  output.append(el("h3", stage.title), el("p", stage.why));
-  const chips = el("div", undefined, "control-chips");
-  stage.controls.forEach((id) => chips.append(el("span", id, "chip")));
-  output.append(chips);
-  stage.controls.forEach((id) => {
-    const card = el("div", undefined, "control-card");
-    card.append(el("strong", `${id} · ${CONTROL_MAP[id][0]}`), el("span", CONTROL_MAP[id][1]));
-    output.append(card);
-  });
-  output.append(el("pre", JSON.stringify(stage.sample, null, 2), "security-json"));
+  const stage = fixture.stages[current];
+  output.append(el("h3", stage.title), el("p", stage.why), el("p", stage.output));
 
-  if (current === STAGES.length - 1) {
-    const links = el("div", undefined, "links-row");
-    const toMatrix = el("button", "Open full matrix", "primary");
-    toMatrix.type = "button";
-    toMatrix.addEventListener("click", () => showView("matrix"));
-    const toCheck = el("button", "Build checklist", "subtle");
-    toCheck.type = "button";
-    toCheck.addEventListener("click", () => showView("checklist"));
-    links.append(toMatrix, toCheck);
-    output.append(links);
+  const chips = el("div", undefined, "control-chips");
+  (fixture.controlsByStage[current] || []).forEach((id) => chips.append(el("span", id, "chip")));
+  output.append(chips);
+
+  if (current === 0) {
+    output.append(el("pre", JSON.stringify({
+      queueAlert: fixture.seed,
+      normalized: {
+        tenant: fixture.seed.cid,
+        id: fixture.seed.composite_id,
+        host: fixture.seed.device.hostname,
+        severity: "critical",
+        time: fixture.seed.timestamp
+      }
+    }, null, 2), "security-json"));
   }
+  if (current === 1) {
+    output.append(el("p", "Alert scope validated · Incident job prepared"));
+    output.append(el("pre", JSON.stringify({
+      incidentId: fixture.incidentId,
+      key: "northwind:evt-ransom-1",
+      window: ["2026-09-01T16:30:00Z", "2026-09-01T16:50:00Z"],
+      pendingJobs: 1
+    }, null, 2), "security-json"));
+  }
+  if (current === 2) fixture.evidence.slice(0, 3).forEach((r) => output.append(recordRow(r)));
+  if (current === 3) fixture.knowledge.forEach((r) => output.append(recordRow(r)));
+  if (current === 4) fixture.evidence.slice(3).forEach((r) => output.append(recordRow(r)));
+  if (current === 5) {
+    output.append(el("strong", "MISP → targeted source lookups"));
+    fixture.intel.forEach((source) => {
+      const row = el("div", undefined, "security-result");
+      row.append(el("strong", source.name), el("p", source.summary));
+      output.append(row);
+    });
+  }
+  if (current === 6) {
+    output.append(el("strong", fixture.assessment.title), el("p", fixture.assessment.summary), el("p", fixture.assessment.confidence));
+    output.append(recordRow(fixture.evidence[0]), recordRow(fixture.evidence[1]), recordRow(fixture.evidence[2]), recordRow(fixture.knowledge[0]));
+  }
+  if (current === 7) {
+    output.append(el("strong", "Assessment delivered to the analyst inbox"));
+    output.append(el("p", "The handoff includes affected systems, evidence, missing telemetry, recommended actions and the investigation history."));
+    const open = el("button", "Open analyst brief", "primary");
+    open.type = "button";
+    open.addEventListener("click", openBrief);
+    output.append(open);
+  }
+
+  renderBrief();
 }
 
 playBtn.addEventListener("click", () => (playing ? pause() : start()));
 nextBtn.addEventListener("click", () => { pause(); advance(); });
-resetBtn.addEventListener("click", () => { pause(); current = -1; draw(); });
+resetBtn.addEventListener("click", () => {
+  pause();
+  current = -1;
+  reviewed = false;
+  reportOpen = false;
+  draw();
+});
 pace.addEventListener("change", () => { if (playing) schedule(); });
 
 renderMatrix();
 renderChecklist();
 renderScorecard();
-draw();
 
-const initial = (location.hash || "#example").slice(1);
-showView(VIEWS.includes(initial) ? initial : "example", { push: false });
-if (!location.hash) history.replaceState({ view: "example" }, "", "#example");
+fetch("./siem-fixture.json")
+  .then((r) => {
+    if (!r.ok) throw new Error("fixture missing");
+    return r.json();
+  })
+  .then((data) => {
+    fixture = data;
+    buildTrack();
+    draw();
+    const initial = (location.hash || "#example").slice(1);
+    showView(VIEWS.includes(initial) ? initial : "example", { push: false });
+    if (!location.hash) history.replaceState({ view: "example" }, "", "#example");
+  })
+  .catch((error) => {
+    output.replaceChildren(el("p", `Could not load SIEM fixture: ${error.message}`, "security-empty"));
+  });
 </script>
 </body>
 </html>
